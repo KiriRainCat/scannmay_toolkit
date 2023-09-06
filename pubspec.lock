@@ -17,6 +17,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "5.13.0"
+  archive:
+    dependency: transitive
+    description:
+      name: archive
+      sha256: "49b1fad315e57ab0bbc15bcbb874e83116a1d78f77ebd500a4af6c9407d6b28e"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.3.8"
   args:
     dependency: transitive
     description:
@@ -440,6 +448,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.8.3"
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      sha256: eeb2d1428ee7f4170e2bd498827296a18d4e7fc462b71727d111c0ac7707cfa6
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "6.0.1"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -448,6 +464,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.6"
+  pointycastle:
+    dependency: transitive
+    description:
+      name: pointycastle
+      sha256: "7c1e5f0d23c9016c5bbd8b1473d0d3fb3fc851b876046039509e18e0c7485f2c"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.7.3"
   pool:
     dependency: transitive
     description:
@@ -472,6 +496,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.2.3"
+  puppeteer:
+    dependency: "direct main"
+    description:
+      name: puppeteer
+      sha256: "0d27d2923d17fccb9792538452da63f242ac0ee31d46bc73df622c029c7ee86f"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.3.0"
   screen_retriever:
     dependency: transitive
     description:
@@ -686,5 +718,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.1.0-262.2.beta <4.0.0"
+  dart: ">=3.1.0 <4.0.0"
   flutter: ">=3.3.0"
