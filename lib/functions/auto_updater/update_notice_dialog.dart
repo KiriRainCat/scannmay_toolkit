@@ -1,0 +1,84 @@
+import 'package:flutter/material.dart';
+import 'package:scannmay_toolkit/functions/auto_updater/auto_updater.dart';
+
+import 'package:scannmay_toolkit/main.dart';
+import 'package:scannmay_toolkit/components/unordered_list_item.dart';
+
+class UpdateNoticeDialog extends StatefulWidget {
+  const UpdateNoticeDialog({
+    super.key,
+    required this.releaseVer,
+    required this.logs,
+  });
+
+  final String releaseVer;
+  final List<String> logs;
+
+  @override
+  State<UpdateNoticeDialog> createState() => _UpdateNoticeDialogState();
+}
+
+class _UpdateNoticeDialogState extends State<UpdateNoticeDialog> {
+  // 下载进度
+  var progress = 0.0;
+
+  // 是否在进行下载
+  bool ifDownloading() => progress != 0.0;
+
+  // 更新下载进度的函数
+  void onReceiveProgress(received, total) => setState(() => progress = received.toDouble() / total);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text("更新提示"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 2),
+            child: Row(
+              children: [
+                Text("v$version", style: const TextStyle(color: Colors.grey)),
+                const Text(" → "),
+                Text("v${widget.releaseVer}", style: const TextStyle(color: Colors.blue)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            width: 360,
+            height: 256,
+            child: ListView.builder(
+              itemCount: widget.logs.length,
+              itemBuilder: (context, index) => widget.logs[index].contains("!!!")
+                  ? UnorderedListItem(text: widget.logs[index], textColor: Colors.red)
+                  : UnorderedListItem(text: widget.logs[index]),
+            ),
+          ),
+          // 在下载时显示进度条
+          if (ifDownloading()) ...[
+            const SizedBox(height: 16),
+            const Text("更新中...", style: TextStyle(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 4),
+            LinearProgressIndicator(
+              value: progress,
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ]
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: ifDownloading() ? null : () => AutoUpdater.updateSoftware(onReceiveProgress),
+          child: const Text("立即升级"),
+        ),
+        TextButton(
+          onPressed: ifDownloading() ? null : () => Navigator.of(context).pop(false),
+          child: const Text("取消", style: TextStyle(color: Colors.grey)),
+        ),
+      ],
+    );
+  }
+}

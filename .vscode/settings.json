@@ -1,0 +1,15 @@
+{
+  "files.exclude": {
+    ".dart_tool": true,
+    ".flutter-plugins*": true,
+    "build": true,
+    "linux": true,
+    "ios": true,
+    "macos": true,
+    "web": true,
+    //? May need the two bellow
+    "android": true,
+    "windows": true
+  },
+  "cSpell.words": ["Frameless", "scannmay"]
+}
