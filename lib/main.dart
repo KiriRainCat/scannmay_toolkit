@@ -74,7 +74,7 @@ Future<void> _initAndRunApp(List<String> args) async {
   // 必须的初始化工作
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
-  await localNotifier.setup(appName: "雨猫工具盒");
+  await localNotifier.setup(appName: "Scannmay Toolkit");
 
   // 单例模式判断
   await WindowsSingleInstance.ensureSingleInstance(
