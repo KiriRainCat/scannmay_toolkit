@@ -2,28 +2,6 @@ import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 class Utils {
-  ///? 传入 seconds 转换为 小时:分钟:秒 的格式 Ex. (03:13:09)
-  static String formatSeconds(int sec) {
-    dynamic hours = (sec / 3600).floor();
-    hours = "${hours < 10 ? "0" : ""}$hours";
-
-    dynamic minutes = (sec % 3600 / 60).floor();
-    minutes = "${minutes < 10 ? "0" : ""}$minutes";
-
-    dynamic seconds = (sec % 60);
-    seconds = "${seconds < 10 ? "0" : ""}$seconds";
-
-    return "$hours:$minutes:$seconds";
-  }
-
-  ///? 获取当前月 Ex. (2023-09)
-  static String getCurrentMonth() {
-    final date = DateTime.now();
-    dynamic month = date.month;
-    if (month < 10) month = "0$month";
-    return "${date.year}-$month";
-  }
-
   ///? 获取应用根目录 传入布尔决定是否移除最后的 exe 文件名
   static String getAppDir(bool removeExeName) {
     var path = GetCommandLine().toDartString();
