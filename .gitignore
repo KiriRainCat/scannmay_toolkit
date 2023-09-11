@@ -43,5 +43,9 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# vscode
+.vscode/*
+!.vscode/settings.json
+
 # Temp Chromium
 .local-chrome
