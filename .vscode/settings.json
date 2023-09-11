@@ -8,6 +8,7 @@
     "macos": true,
     "web": true,
     //? May need the two bellow
+    ".local-chrome": true,
     "android": true,
     "windows": true
   },
