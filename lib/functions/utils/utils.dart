@@ -16,10 +16,12 @@ class Utils {
     return "$hours:$minutes:$seconds";
   }
 
-  ///? 获取当前日期 Ex. (2023-8-17)
-  static String getDateString() {
+  ///? 获取当前月 Ex. (2023-09)
+  static String getCurrentMonth() {
     final date = DateTime.now();
-    return "${date.year}-${date.month}-${date.day}";
+    dynamic month = date.month;
+    if (month < 10) month = "0$month";
+    return "${date.year}-$month";
   }
 
   ///? 获取应用根目录 传入布尔决定是否移除最后的 exe 文件名
