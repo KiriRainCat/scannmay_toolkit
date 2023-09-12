@@ -6,14 +6,19 @@ class NotificationView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("第一次进行查询时可能会较慢，需要下载 Chromium 核心"),
-        const SizedBox(height: 12),
+        Text("第一次进行查询时可能会较慢，需要下载 Chromium 核心"),
+        SizedBox(height: 12),
         ElevatedButton(
-          onPressed: () => AssignmentNotifierBgWorker.checkForNewAssignment(),
-          child: const Text("分析 Jupiter 信息"),
+          onPressed: AssignmentNotifierBgWorker.initAndStart,
+          child: Text("启动数据库"),
+        ),
+        SizedBox(height: 12),
+        ElevatedButton(
+          onPressed: AssignmentNotifierBgWorker.checkForNewAssignment,
+          child: Text("分析 Jupiter 信息"),
         ),
       ],
     );
