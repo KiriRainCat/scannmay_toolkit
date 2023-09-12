@@ -24,8 +24,6 @@ class Course {
 
 @embedded
 class Assignment {
-  int? state;
-
   String? due;
 
   String? title;
