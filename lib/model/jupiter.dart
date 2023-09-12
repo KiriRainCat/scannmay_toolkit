@@ -15,7 +15,9 @@ class Course {
 
   String? grade;
 
-  int? assignmentTotalCount;
+  int? gradedAssignmentCount;
+
+  int? ungradedAssignmentCount;
 
   List<Assignment>? assignments;
 }

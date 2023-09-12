@@ -424,26 +424,31 @@ const CourseSchema = Schema(
   name: r'Course',
   id: -5832084671214696602,
   properties: {
-    r'assignmentTotalCount': PropertySchema(
-      id: 0,
-      name: r'assignmentTotalCount',
-      type: IsarType.long,
-    ),
     r'assignments': PropertySchema(
-      id: 1,
+      id: 0,
       name: r'assignments',
       type: IsarType.objectList,
       target: r'Assignment',
     ),
     r'grade': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'grade',
       type: IsarType.string,
+    ),
+    r'gradedAssignmentCount': PropertySchema(
+      id: 2,
+      name: r'gradedAssignmentCount',
+      type: IsarType.long,
     ),
     r'name': PropertySchema(
       id: 3,
       name: r'name',
       type: IsarType.string,
+    ),
+    r'ungradedAssignmentCount': PropertySchema(
+      id: 4,
+      name: r'ungradedAssignmentCount',
+      type: IsarType.long,
     )
   },
   estimateSize: _courseEstimateSize,
@@ -493,15 +498,16 @@ void _courseSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.assignmentTotalCount);
   writer.writeObjectList<Assignment>(
-    offsets[1],
+    offsets[0],
     allOffsets,
     AssignmentSchema.serialize,
     object.assignments,
   );
-  writer.writeString(offsets[2], object.grade);
+  writer.writeString(offsets[1], object.grade);
+  writer.writeLong(offsets[2], object.gradedAssignmentCount);
   writer.writeString(offsets[3], object.name);
+  writer.writeLong(offsets[4], object.ungradedAssignmentCount);
 }
 
 Course _courseDeserialize(
@@ -511,15 +517,16 @@ Course _courseDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Course();
-  object.assignmentTotalCount = reader.readLongOrNull(offsets[0]);
   object.assignments = reader.readObjectList<Assignment>(
-    offsets[1],
+    offsets[0],
     AssignmentSchema.deserialize,
     allOffsets,
     Assignment(),
   );
-  object.grade = reader.readStringOrNull(offsets[2]);
+  object.grade = reader.readStringOrNull(offsets[1]);
+  object.gradedAssignmentCount = reader.readLongOrNull(offsets[2]);
   object.name = reader.readStringOrNull(offsets[3]);
+  object.ungradedAssignmentCount = reader.readLongOrNull(offsets[4]);
   return object;
 }
 
@@ -531,98 +538,26 @@ P _courseDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset)) as P;
-    case 1:
       return (reader.readObjectList<Assignment>(
         offset,
         AssignmentSchema.deserialize,
         allOffsets,
         Assignment(),
       )) as P;
-    case 2:
+    case 1:
       return (reader.readStringOrNull(offset)) as P;
+    case 2:
+      return (reader.readLongOrNull(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
+    case 4:
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
 extension CourseQueryFilter on QueryBuilder<Course, Course, QFilterCondition> {
-  QueryBuilder<Course, Course, QAfterFilterCondition>
-      assignmentTotalCountIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'assignmentTotalCount',
-      ));
-    });
-  }
-
-  QueryBuilder<Course, Course, QAfterFilterCondition>
-      assignmentTotalCountIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'assignmentTotalCount',
-      ));
-    });
-  }
-
-  QueryBuilder<Course, Course, QAfterFilterCondition>
-      assignmentTotalCountEqualTo(int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'assignmentTotalCount',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Course, Course, QAfterFilterCondition>
-      assignmentTotalCountGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'assignmentTotalCount',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Course, Course, QAfterFilterCondition>
-      assignmentTotalCountLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'assignmentTotalCount',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Course, Course, QAfterFilterCondition>
-      assignmentTotalCountBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'assignmentTotalCount',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<Course, Course, QAfterFilterCondition> assignmentsIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -870,6 +805,80 @@ extension CourseQueryFilter on QueryBuilder<Course, Course, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Course, Course, QAfterFilterCondition>
+      gradedAssignmentCountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'gradedAssignmentCount',
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition>
+      gradedAssignmentCountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'gradedAssignmentCount',
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition>
+      gradedAssignmentCountEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'gradedAssignmentCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition>
+      gradedAssignmentCountGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'gradedAssignmentCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition>
+      gradedAssignmentCountLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'gradedAssignmentCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition>
+      gradedAssignmentCountBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'gradedAssignmentCount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Course, Course, QAfterFilterCondition> nameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1011,6 +1020,80 @@ extension CourseQueryFilter on QueryBuilder<Course, Course, QFilterCondition> {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'name',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition>
+      ungradedAssignmentCountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'ungradedAssignmentCount',
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition>
+      ungradedAssignmentCountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'ungradedAssignmentCount',
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition>
+      ungradedAssignmentCountEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'ungradedAssignmentCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition>
+      ungradedAssignmentCountGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'ungradedAssignmentCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition>
+      ungradedAssignmentCountLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'ungradedAssignmentCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition>
+      ungradedAssignmentCountBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'ungradedAssignmentCount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
