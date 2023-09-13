@@ -33,7 +33,7 @@ class _GlobalNavViewState extends State<GlobalNavView> {
             leading: Column(
               children: [
                 const SizedBox(height: 8),
-                Image.asset("assets/images/tray_icon.png", width: 50, isAntiAlias: true),
+                Image.asset("assets/images/icon.png", width: 50, isAntiAlias: true),
                 IconButton(
                   onPressed: () => setState(() => navExpanded = !navExpanded),
                   icon: menuIcon,
