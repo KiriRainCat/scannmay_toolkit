@@ -6,6 +6,7 @@ import 'package:isar/isar.dart';
 import 'package:puppeteer/puppeteer.dart';
 
 import 'package:scannmay_toolkit/constants.dart';
+import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/model/jupiter.dart';
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
 
@@ -116,19 +117,31 @@ class AssignmentNotifierBgWorker {
       }
       storedCourses.remove(course);
 
-      // 比较数据库中的与新查询到的作业数据，计算差值数组，如无差值就跳过
-      final newAssignments = await _findListDiff(course.assignments!, assignments.cast());
-      if (newAssignments.isEmpty) continue;
+      // 比较数据库中的与新查询到的作业数据，差值，如无差值就跳过
+      final modifications = await _findListDiff(course.assignments!, assignments.cast());
+      if (modifications["new"]!.isEmpty && modifications["score"]!.isEmpty) continue;
 
-      // 通知学生有新作业，数据存回上级对象
-      // TODO: 添加学生提示信息
-      print(newAssignments);
-      storedCourses.add(course..assignments = assignments.cast());
+      // 如果有新作业
+      if (modifications["new"]!.isNotEmpty) {
+        // 通知学生有新作业
+        // TODO: 添加学生提示信息
+        print(modifications["new"]);
+        UI.showNotification("新作业");
+      }
 
+      // 如果有新成绩
+      if (modifications["score"]!.isNotEmpty) {
+        print(modifications["score"]);
+        UI.showNotification("新成绩");
+      }
+
+      // 修改标识自增，将数据存入对象
       modification++;
+      storedCourses.add(course..assignments = assignments.cast());
       await Future.delayed(Constants.universalDelay);
     }
 
+    // 如无修改就不再写入数据库，反之写入
     if (modification == 0) return;
     jupiterData.courses = storedCourses;
     isar.writeTxn(() => isar.jupiterDatas.put(jupiterData!));
@@ -142,8 +155,9 @@ class AssignmentNotifierBgWorker {
     return courses;
   }
 
-  static Future<List<Assignment>> _findListDiff(List<Assignment> l1, List<Assignment> l2) async {
-    final List<Assignment> diff = [];
+  static Future<Map<String, List<Assignment>>> _findListDiff(
+      List<Assignment> l1, List<Assignment> l2) async {
+    final Map<String, List<Assignment>> diff = {"score": [], "new": []};
     if (l1.length < l2.length) {
       final tmp = l1;
       l1 = l2;
@@ -151,15 +165,13 @@ class AssignmentNotifierBgWorker {
     }
 
     for (var item in l1) {
-      final searchResult = l2.where(
-        (assignment) =>
-            assignment.due == item.due &&
-            assignment.score == item.score &&
-            assignment.title == item.title,
-      );
-      if (searchResult.isEmpty) diff.add(item);
+      final searchResult = l2.where((assignment) => assignment.title == item.title);
+      if (searchResult.isEmpty) {
+        diff["new"]!.add(item);
+      } else if (searchResult.first.score != item.score) {
+        diff["score"]!.add(item);
+      }
     }
-
     return diff;
   }
 }
