@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
 import 'package:system_tray/system_tray.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:local_notifier/local_notifier.dart';
@@ -22,6 +23,9 @@ void main(List<String> args) async {
 
   // 初始化与启动应用
   await _initAndRunApp(args);
+
+  // 启动 Jupiter 数据定时获取进程
+  AssignmentNotifierBgWorker.initAndStart();
 
   // 应用启动时检查更新
   if (Utils.ifProduction()) AutoUpdater.checkForUpdate(atStartup: true);
@@ -139,7 +143,7 @@ Future<void> _initAndRunApp(List<String> args) async {
   // 注册快捷键
   await hotKeyManager.unregisterAll();
   await hotKeyManager.register(
-    // 全局快捷键：显示与隐藏应用界面 默认 Ctrl + Alt + K
+    // 全局快捷键：显示与隐藏应用界面 默认 Ctrl + Alt + N
     HotKey(
       KeyCode.keyN,
       identifier: "switchWindowVisibleState",
