@@ -55,7 +55,10 @@ class AssignmentNotifierBgWorker {
     // 获取科目数量
     final courseCount = (await _getCourses(jupiterPage)).length;
     await jupiterPage.click("#touchnavbtn");
-    if (courseCount == 0) return;
+    if (courseCount == 0) {
+      browser.close();
+      return;
+    }
 
     //* --------------------------- 转跳到各个科目并记录作业列表数据 --------------------------- *//
     // 从数据库获取数据，或判空创建新的
@@ -113,9 +116,14 @@ class AssignmentNotifierBgWorker {
             ..name = courseName
             ..assignments = assignments.cast(),
         );
+        var msg = "";
+        for (var assignment in assignments) {
+          msg += "${assignment.due} ${assignment.title}\n";
+        }
+        UI.showNotification("新作业: \n$msg");
+        modification++;
         continue;
       }
-      storedCourses.remove(course);
 
       // 比较数据库中的与新查询到的作业数据，差值，如无差值就跳过
       final modifications = await _findListDiff(course.assignments!, assignments.cast());
@@ -123,25 +131,31 @@ class AssignmentNotifierBgWorker {
 
       // 如果有新作业
       if (modifications["new"]!.isNotEmpty) {
-        // 通知学生有新作业
-        // TODO: 添加学生提示信息
-        print(modifications["new"]);
-        UI.showNotification("新作业");
+        var msg = "";
+        for (var assignment in modifications["new"]!) {
+          msg += "${assignment.due} ${assignment.title}\n";
+        }
+        UI.showNotification("新作业: \n$msg");
       }
 
       // 如果有新成绩
       if (modifications["score"]!.isNotEmpty) {
-        print(modifications["score"]);
-        UI.showNotification("新成绩");
+        var msg = "";
+        for (var assignment in modifications["score"]!) {
+          msg += "${assignment.score} ${assignment.title}\n";
+        }
+        UI.showNotification("新成绩: \n$msg");
       }
 
       // 修改标识自增，将数据存入对象
       modification++;
+      storedCourses.remove(course);
       storedCourses.add(course..assignments = assignments.cast());
       await Future.delayed(Constants.universalDelay);
     }
 
     // 如无修改就不再写入数据库，反之写入
+    browser.close();
     if (modification == 0) return;
     jupiterData.courses = storedCourses;
     isar.writeTxn(() => isar.jupiterDatas.put(jupiterData!));
@@ -157,7 +171,7 @@ class AssignmentNotifierBgWorker {
 
   static Future<Map<String, List<Assignment>>> _findListDiff(
       List<Assignment> l1, List<Assignment> l2) async {
-    final Map<String, List<Assignment>> diff = {"score": [], "new": []};
+    final Map<String, List<Assignment>> diff = {"new": [], "score": []};
     if (l1.length < l2.length) {
       final tmp = l1;
       l1 = l2;
@@ -165,7 +179,9 @@ class AssignmentNotifierBgWorker {
     }
 
     for (var item in l1) {
-      final searchResult = l2.where((assignment) => assignment.title == item.title);
+      final searchResult = l2.where(
+        (assignment) => assignment.title == item.title && assignment.due == item.due,
+      );
       if (searchResult.isEmpty) {
         diff["new"]!.add(item);
       } else if (searchResult.first.score != item.score) {
