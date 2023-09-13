@@ -33,7 +33,8 @@ class _GlobalNavViewState extends State<GlobalNavView> {
             leading: Column(
               children: [
                 const SizedBox(height: 8),
-                Image.asset("assets/images/icon.png", width: 50, isAntiAlias: true),
+                // TODO: 做个日夜图标轮换 day.png / night.png
+                Image.asset("assets/images/night.png", width: 50, isAntiAlias: true),
                 IconButton(
                   onPressed: () => setState(() => navExpanded = !navExpanded),
                   icon: menuIcon,
