@@ -62,10 +62,7 @@ class AssignmentNotifierBgWorker {
     //* --------------------------- 转跳到各个科目并记录作业列表数据 --------------------------- *//
     // 从数据库获取数据，或判空创建新的
     var jupiterData = await isar.jupiterDatas.filter().idEqualTo(0).findFirst();
-    jupiterData ??= JupiterData()
-      ..id = 0
-      ..courses = [];
-    final List<Course> storedCourses = jupiterData.courses!.toList();
+    final List<Course> storedCourses = jupiterData!.courses!.toList();
 
     // 遍历查询课程列表中的作业数据
     var modification = 0;
@@ -159,7 +156,7 @@ class AssignmentNotifierBgWorker {
     browser.close();
     if (modification == 0) return;
     jupiterData.courses = storedCourses;
-    isar.writeTxn(() => isar.jupiterDatas.put(jupiterData!));
+    isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
   }
 
   static Future<List<ElementHandle>> _getCourses(Page jupiterPage) async {
