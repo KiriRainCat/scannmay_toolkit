@@ -6,11 +6,11 @@ import 'package:isar/isar.dart';
 import 'package:puppeteer/puppeteer.dart';
 
 import 'package:scannmay_toolkit/constants.dart';
-import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
-import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/model/jupiter.dart';
-import 'package:scannmay_toolkit/functions/utils/utils.dart';
 import 'package:scannmay_toolkit/model/notification.dart';
+import 'package:scannmay_toolkit/functions/utils/ui.dart';
+import 'package:scannmay_toolkit/functions/utils/utils.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 
 class AssignmentNotifierBgWorker {
   static late final Isar isar;
@@ -125,7 +125,7 @@ class AssignmentNotifierBgWorker {
       }
 
       // 比较数据库中的与新查询到的作业数据，差值，如无差值就跳过
-      final modifications = await _findListDiff(course.assignments!, assignments.cast());
+      final modifications = await _findListDiff(assignments.cast(), course.assignments!);
       if (modifications["new"]!.isEmpty && modifications["score"]!.isEmpty) continue;
 
       // 如果有新作业
@@ -173,11 +173,6 @@ class AssignmentNotifierBgWorker {
   static Future<Map<String, List<Assignment>>> _findListDiff(
       List<Assignment> l1, List<Assignment> l2) async {
     final Map<String, List<Assignment>> diff = {"new": [], "score": []};
-    if (l1.length < l2.length) {
-      final tmp = l1;
-      l1 = l2;
-      l2 = tmp;
-    }
 
     for (var item in l1) {
       final searchResult = l2.where(
