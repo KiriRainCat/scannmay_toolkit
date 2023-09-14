@@ -50,4 +50,9 @@ class Utils {
   static bool ifProduction() {
     return const bool.fromEnvironment("dart.vm.product");
   }
+
+  static String formatTime(DateTime time) {
+    final timeStr = time.toString();
+    return timeStr.substring(0, timeStr.length - 7);
+  }
 }
