@@ -15,11 +15,8 @@ class AssignmentNotifierBgWorker {
 
   static late final Timer bgWorker;
 
-  static void initAndStart() async {
-    isar = await Isar.open(
-      [JupiterDataSchema],
-      directory: Utils.ifProduction() ? Utils.getAppDir(true) : Constants.devAppDir,
-    );
+  static void initAndStart(Isar db) {
+    isar = db;
   }
 
   static void checkForNewAssignment() async {

@@ -1,7 +1,20 @@
 import 'package:ffi/ffi.dart';
+import 'package:isar/isar.dart';
 import 'package:win32/win32.dart';
 
+import 'package:scannmay_toolkit/constants.dart';
+import 'package:scannmay_toolkit/model/jupiter.dart';
+import 'package:scannmay_toolkit/model/notification.dart';
+
 class Utils {
+  ///? 初始化与连接数据库
+  static Isar initDatabase() {
+    return Isar.openSync(
+      [JupiterDataSchema, JupiterNotificationSchema],
+      directory: Utils.ifProduction() ? Utils.getAppDir(true) : Constants.devAppDir,
+    );
+  }
+
   ///? 获取应用根目录 传入布尔决定是否移除最后的 exe 文件名
   static String getAppDir(bool removeExeName) {
     var path = GetCommandLine().toDartString();

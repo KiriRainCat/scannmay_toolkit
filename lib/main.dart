@@ -25,11 +25,14 @@ void main(List<String> args) async {
   // 初始化与启动应用
   await _initAndRunApp(args);
 
+  // 开启数据库
+  final isar = Utils.initDatabase();
+
   // 启动 Jupiter 数据定时获取进程
-  AssignmentNotifierBgWorker.initAndStart();
+  AssignmentNotifierBgWorker.initAndStart(isar);
 
   // 启动消息队列数据库
-  NotificationQueue.initQueue();
+  NotificationQueue.initQueue(isar);
 
   // 应用启动时检查更新
   if (Utils.ifProduction()) AutoUpdater.checkForUpdate(atStartup: true);
