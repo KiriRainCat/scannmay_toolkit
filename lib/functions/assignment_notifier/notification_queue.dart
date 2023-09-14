@@ -23,7 +23,9 @@ class NotificationQueue {
     isar.writeTxn(() => isar.jupiterNotifications.put(notificationQueue));
   }
 
-  static void clear() {
-    isar.writeTxn(() => isar.jupiterNotifications.clear());
+  static void clear() async {
+    final notificationQueue = await isar.jupiterNotifications.filter().idEqualTo(0).findFirst();
+    notificationQueue!.messages = notificationQueue.messages!.toList()..removeWhere((_) => true);
+    isar.writeTxn(() => isar.jupiterNotifications.put(notificationQueue));
   }
 }
