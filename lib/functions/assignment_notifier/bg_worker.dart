@@ -6,9 +6,11 @@ import 'package:isar/isar.dart';
 import 'package:puppeteer/puppeteer.dart';
 
 import 'package:scannmay_toolkit/constants.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/model/jupiter.dart';
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
+import 'package:scannmay_toolkit/model/notification.dart';
 
 class AssignmentNotifierBgWorker {
   static late final Isar isar;
@@ -128,20 +130,22 @@ class AssignmentNotifierBgWorker {
 
       // 如果有新作业
       if (modifications["new"]!.isNotEmpty) {
-        var msg = "";
-        for (var assignment in modifications["new"]!) {
-          msg += "${assignment.due} ${assignment.title}\n";
-        }
-        UI.showNotification("新作业: \n$msg");
+        NotificationQueue.push(
+          JupiterNotification()
+            ..time = DateTime.now()
+            ..title = "新作业提示"
+            ..assignments = modifications["new"],
+        );
       }
 
       // 如果有新成绩
       if (modifications["score"]!.isNotEmpty) {
-        var msg = "";
-        for (var assignment in modifications["score"]!) {
-          msg += "${assignment.score} ${assignment.title}\n";
-        }
-        UI.showNotification("新成绩: \n$msg");
+        NotificationQueue.push(
+          JupiterNotification()
+            ..time = DateTime.now()
+            ..title = "成绩变动提示"
+            ..assignments = modifications["score"],
+        );
       }
 
       // 修改标识自增，将数据存入对象
