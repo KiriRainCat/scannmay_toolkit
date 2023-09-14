@@ -9,10 +9,22 @@ import 'package:scannmay_toolkit/model/notification.dart';
 class Utils {
   ///? 初始化与连接数据库
   static Isar initDatabase() {
-    return Isar.openSync(
+    final isar = Isar.openSync(
       [JupiterDataSchema, JupiterNotificationSchema],
       directory: Utils.ifProduction() ? Utils.getAppDir(true) : Constants.devAppDir,
     );
+
+    // 如果应用启动时数据库消息队列不存在，先创建一个避免页面报错
+    if (isar.jupiterNotifications.filter().idEqualTo(0).findFirstSync() == null) {
+      isar.writeTxn(() => isar.jupiterNotifications.put(JupiterNotification()..messages = []));
+    }
+
+    // 如果应用启动时数据库 Jupiter 信息不存在，先创建一个避免页面报错
+    if (isar.jupiterDatas.filter().idEqualTo(0).findFirstSync() == null) {
+      isar.writeTxn(() => isar.jupiterDatas.put(JupiterData()..courses = []));
+    }
+
+    return isar;
   }
 
   ///? 获取应用根目录 传入布尔决定是否移除最后的 exe 文件名
