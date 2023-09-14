@@ -141,7 +141,7 @@ class AssignmentNotifierBgWorker {
         NotificationQueue.push(
           Message()
             ..time = DateTime.now()
-            ..title = "成绩变动提示"
+            ..title = "新成绩提示"
             ..course = courseName
             ..assignments = modifications["score"],
         );
