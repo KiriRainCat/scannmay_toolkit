@@ -19,5 +19,7 @@ class Message {
 
   String? title;
 
+  String? course;
+
   List<Assignment>? assignments;
 }

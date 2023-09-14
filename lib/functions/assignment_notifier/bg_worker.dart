@@ -131,6 +131,7 @@ class AssignmentNotifierBgWorker {
           Message()
             ..time = DateTime.now()
             ..title = "新作业提示"
+            ..course = courseName
             ..assignments = modifications["new"],
         );
       }
@@ -141,6 +142,7 @@ class AssignmentNotifierBgWorker {
           Message()
             ..time = DateTime.now()
             ..title = "成绩变动提示"
+            ..course = courseName
             ..assignments = modifications["score"],
         );
       }
