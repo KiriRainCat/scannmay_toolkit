@@ -18,10 +18,11 @@ const JupiterNotificationSchema = CollectionSchema(
   name: r'JupiterNotification',
   id: 5751978363218455941,
   properties: {
-    r'msg': PropertySchema(
+    r'assignments': PropertySchema(
       id: 0,
-      name: r'msg',
-      type: IsarType.string,
+      name: r'assignments',
+      type: IsarType.objectList,
+      target: r'Assignment',
     ),
     r'time': PropertySchema(
       id: 1,
@@ -41,7 +42,7 @@ const JupiterNotificationSchema = CollectionSchema(
   idName: r'id',
   indexes: {},
   links: {},
-  embeddedSchemas: {},
+  embeddedSchemas: {r'Assignment': AssignmentSchema},
   getId: _jupiterNotificationGetId,
   getLinks: _jupiterNotificationGetLinks,
   attach: _jupiterNotificationAttach,
@@ -55,9 +56,17 @@ int _jupiterNotificationEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
-    final value = object.msg;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
+    final list = object.assignments;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        final offsets = allOffsets[Assignment]!;
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount +=
+              AssignmentSchema.estimateSize(value, offsets, allOffsets);
+        }
+      }
     }
   }
   {
@@ -75,7 +84,12 @@ void _jupiterNotificationSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.msg);
+  writer.writeObjectList<Assignment>(
+    offsets[0],
+    allOffsets,
+    AssignmentSchema.serialize,
+    object.assignments,
+  );
   writer.writeDateTime(offsets[1], object.time);
   writer.writeString(offsets[2], object.title);
 }
@@ -87,8 +101,13 @@ JupiterNotification _jupiterNotificationDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = JupiterNotification();
+  object.assignments = reader.readObjectList<Assignment>(
+    offsets[0],
+    AssignmentSchema.deserialize,
+    allOffsets,
+    Assignment(),
+  );
   object.id = id;
-  object.msg = reader.readStringOrNull(offsets[0]);
   object.time = reader.readDateTimeOrNull(offsets[1]);
   object.title = reader.readStringOrNull(offsets[2]);
   return object;
@@ -102,7 +121,12 @@ P _jupiterNotificationDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readObjectList<Assignment>(
+        offset,
+        AssignmentSchema.deserialize,
+        allOffsets,
+        Assignment(),
+      )) as P;
     case 1:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
@@ -209,6 +233,113 @@ extension JupiterNotificationQueryWhere
 extension JupiterNotificationQueryFilter on QueryBuilder<JupiterNotification,
     JupiterNotification, QFilterCondition> {
   QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
+      assignmentsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'assignments',
+      ));
+    });
+  }
+
+  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
+      assignmentsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'assignments',
+      ));
+    });
+  }
+
+  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
+      assignmentsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'assignments',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
+      assignmentsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'assignments',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
+      assignmentsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'assignments',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
+      assignmentsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'assignments',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
+      assignmentsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'assignments',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
+      assignmentsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'assignments',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
       idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -260,160 +391,6 @@ extension JupiterNotificationQueryFilter on QueryBuilder<JupiterNotification,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
-      msgIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'msg',
-      ));
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
-      msgIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'msg',
-      ));
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
-      msgEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'msg',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
-      msgGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'msg',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
-      msgLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'msg',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
-      msgBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'msg',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
-      msgStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'msg',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
-      msgEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'msg',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
-      msgContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'msg',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
-      msgMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'msg',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
-      msgIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'msg',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
-      msgIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'msg',
-        value: '',
       ));
     });
   }
@@ -648,27 +625,20 @@ extension JupiterNotificationQueryFilter on QueryBuilder<JupiterNotification,
 }
 
 extension JupiterNotificationQueryObject on QueryBuilder<JupiterNotification,
-    JupiterNotification, QFilterCondition> {}
+    JupiterNotification, QFilterCondition> {
+  QueryBuilder<JupiterNotification, JupiterNotification, QAfterFilterCondition>
+      assignmentsElement(FilterQuery<Assignment> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'assignments');
+    });
+  }
+}
 
 extension JupiterNotificationQueryLinks on QueryBuilder<JupiterNotification,
     JupiterNotification, QFilterCondition> {}
 
 extension JupiterNotificationQuerySortBy
     on QueryBuilder<JupiterNotification, JupiterNotification, QSortBy> {
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterSortBy>
-      sortByMsg() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'msg', Sort.asc);
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterSortBy>
-      sortByMsgDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'msg', Sort.desc);
-    });
-  }
-
   QueryBuilder<JupiterNotification, JupiterNotification, QAfterSortBy>
       sortByTime() {
     return QueryBuilder.apply(this, (query) {
@@ -715,20 +685,6 @@ extension JupiterNotificationQuerySortThenBy
   }
 
   QueryBuilder<JupiterNotification, JupiterNotification, QAfterSortBy>
-      thenByMsg() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'msg', Sort.asc);
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterSortBy>
-      thenByMsgDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'msg', Sort.desc);
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QAfterSortBy>
       thenByTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'time', Sort.asc);
@@ -760,13 +716,6 @@ extension JupiterNotificationQuerySortThenBy
 extension JupiterNotificationQueryWhereDistinct
     on QueryBuilder<JupiterNotification, JupiterNotification, QDistinct> {
   QueryBuilder<JupiterNotification, JupiterNotification, QDistinct>
-      distinctByMsg({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'msg', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<JupiterNotification, JupiterNotification, QDistinct>
       distinctByTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'time');
@@ -789,9 +738,10 @@ extension JupiterNotificationQueryProperty
     });
   }
 
-  QueryBuilder<JupiterNotification, String?, QQueryOperations> msgProperty() {
+  QueryBuilder<JupiterNotification, List<Assignment>?, QQueryOperations>
+      assignmentsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'msg');
+      return query.addPropertyName(r'assignments');
     });
   }
 

@@ -1,5 +1,7 @@
 import 'package:isar/isar.dart';
 
+import 'package:scannmay_toolkit/model/jupiter.dart';
+
 part 'notification.g.dart';
 
 @collection
@@ -10,5 +12,5 @@ class JupiterNotification {
 
   String? title;
 
-  String? msg;
+  List<Assignment>? assignments;
 }
