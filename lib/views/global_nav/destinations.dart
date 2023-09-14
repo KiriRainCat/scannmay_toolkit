@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:scannmay_toolkit/main.dart';
 import 'package:scannmay_toolkit/views/home_view.dart';
 import 'package:scannmay_toolkit/views/about_view.dart';
-import 'package:scannmay_toolkit/views/notification_view.dart';
+import 'package:scannmay_toolkit/views/notification_view/notification_view.dart';
 
 const textStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 12.6);
 
