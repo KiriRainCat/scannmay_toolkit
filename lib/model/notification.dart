@@ -6,7 +6,14 @@ part 'notification.g.dart';
 
 @collection
 class JupiterNotification {
-  Id id = Isar.autoIncrement;
+  Id id = 0;
+
+  List<Message>? messages;
+}
+
+@embedded
+class Message {
+  int state = 0;
 
   DateTime? time;
 

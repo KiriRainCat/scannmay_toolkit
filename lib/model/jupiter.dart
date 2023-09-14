@@ -4,7 +4,7 @@ part 'jupiter.g.dart';
 
 @collection
 class JupiterData {
-  Id id = Isar.autoIncrement;
+  Id id = 0;
 
   List<Course>? courses;
 }
