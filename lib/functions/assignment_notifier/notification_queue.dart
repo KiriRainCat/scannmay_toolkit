@@ -9,12 +9,18 @@ class NotificationQueue {
     isar = db;
   }
 
-  static void push(JupiterNotification notification) {
-    isar.writeTxn(() => isar.jupiterNotifications.put(notification));
+  static void push(Message msg) async {
+    var notificationQueue = await isar.jupiterNotifications.filter().idEqualTo(0).findFirst();
+    notificationQueue ??= JupiterNotification()..messages = [msg];
+
+    notificationQueue.messages = notificationQueue.messages!.toList()..add(msg);
+    isar.writeTxn(() => isar.jupiterNotifications.put(notificationQueue!));
   }
 
-  static void pop(int id) {
-    isar.writeTxn(() => isar.jupiterNotifications.delete(id));
+  static void pop(int index) async {
+    final notificationQueue = await isar.jupiterNotifications.filter().idEqualTo(0).findFirst();
+    notificationQueue!.messages = notificationQueue.messages!.toList()..removeAt(index);
+    isar.writeTxn(() => isar.jupiterNotifications.put(notificationQueue));
   }
 
   static void clear() {

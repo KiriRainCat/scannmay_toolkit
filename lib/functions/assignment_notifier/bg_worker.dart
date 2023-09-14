@@ -131,7 +131,7 @@ class AssignmentNotifierBgWorker {
       // 如果有新作业
       if (modifications["new"]!.isNotEmpty) {
         NotificationQueue.push(
-          JupiterNotification()
+          Message()
             ..time = DateTime.now()
             ..title = "新作业提示"
             ..assignments = modifications["new"],
@@ -141,7 +141,7 @@ class AssignmentNotifierBgWorker {
       // 如果有新成绩
       if (modifications["score"]!.isNotEmpty) {
         NotificationQueue.push(
-          JupiterNotification()
+          Message()
             ..time = DateTime.now()
             ..title = "成绩变动提示"
             ..assignments = modifications["score"],
