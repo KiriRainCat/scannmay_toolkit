@@ -169,8 +169,7 @@ class AssignmentNotifierBgWorker {
     isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
     localNotifier.notify(
       LocalNotification(
-        title: "共有 $modification 门科目有新作业 | 成绩",
-        subtitle: "共有 $modification 门科目有新作业 | 成绩",
+        title: "共有 ${modifiedCourses.length} 门科目有新作业 | 成绩",
         body: modifiedCourses.join("\n"),
       ),
     );
