@@ -17,9 +17,10 @@ class NotificationQueue {
     isar.writeTxn(() => isar.jupiterNotifications.put(notificationQueue!));
   }
 
-  static void pop(int index) async {
+  static void pop(Message msg) async {
     final notificationQueue = await isar.jupiterNotifications.filter().idEqualTo(0).findFirst();
-    notificationQueue!.messages = notificationQueue.messages!.toList()..removeAt(index);
+    notificationQueue!.messages = notificationQueue.messages!.toList()
+      ..removeWhere((item) => item.time == msg.time && item.course == msg.course);
     isar.writeTxn(() => isar.jupiterNotifications.put(notificationQueue));
   }
 

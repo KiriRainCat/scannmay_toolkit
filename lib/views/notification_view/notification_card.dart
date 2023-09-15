@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:scannmay_toolkit/components/rounded_button.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 
 import 'package:scannmay_toolkit/model/notification.dart';
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
@@ -34,33 +36,52 @@ class NotificationCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Flex(
+        direction: Axis.horizontal,
         children: [
-          Row(
-            children: [
-              Text("${message.title}"),
-              const SizedBox(width: 12),
-              Text(Utils.formatTime(message.time!)),
-              const SizedBox(width: 12),
-              Text("${message.course}"),
-            ],
-          ),
-          for (var assignment in message.assignments!) ...[
-            const SizedBox(height: 4),
-            Row(
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(formatDueDate(assignment.due!)),
-                const SizedBox(width: 12),
-                Text(
-                  assignment.title!,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                Row(
+                  children: [
+                    Text("${message.title}"),
+                    const SizedBox(width: 12),
+                    Text(Utils.formatTime(message.time!)),
+                    const SizedBox(width: 12),
+                    Text("${message.course}"),
+                    const SizedBox(width: 24),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Text("[ ${assignment.score!} ]"),
+                for (var assignment in message.assignments!) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(formatDueDate(assignment.due!)),
+                      const SizedBox(width: 12),
+                      Text(
+                        assignment.title!,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(width: 12),
+                      Text("[ ${assignment.score!} ]"),
+                    ],
+                  ),
+                ]
               ],
             ),
-          ]
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RoundedButton(
+                width: 20,
+                height: 20,
+                onPressed: () => NotificationQueue.pop(message),
+                buttonContent: const Icon(Icons.cancel, size: 20, color: Colors.red),
+              ),
+            ],
+          )
         ],
       ),
     );

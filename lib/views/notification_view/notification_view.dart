@@ -60,10 +60,11 @@ class _NotificationViewState extends State<NotificationView> {
       margin: const EdgeInsets.fromLTRB(24, 8, 24, 24),
       child: Column(
         children: [
-          Row(
+          Flex(
+            direction: Axis.horizontal,
             children: [
               const ElevatedButton(onPressed: null, child: Text("标记全部为已读")),
-              const SizedBox(width: 12),
+              const Expanded(child: SizedBox(width: 0)),
               const ElevatedButton(onPressed: null, child: Text("前往 Jupiter Ed")),
               const SizedBox(width: 12),
               ElevatedButton(
