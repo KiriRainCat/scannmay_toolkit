@@ -24,6 +24,14 @@ class NotificationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8),
+      foregroundDecoration: BoxDecoration(
+        border: Border(
+          left: BorderSide(
+            color: message.title == "新作业提示" ? Colors.green.shade400 : Colors.blue.shade300,
+            width: 10,
+          ),
+        ),
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         color: Theme.of(context).colorScheme.surface,
@@ -38,6 +46,7 @@ class NotificationCard extends StatelessWidget {
       child: Flex(
         direction: Axis.horizontal,
         children: [
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
