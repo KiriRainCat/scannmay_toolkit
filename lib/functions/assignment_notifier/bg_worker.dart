@@ -170,7 +170,7 @@ class AssignmentNotifierBgWorker {
     localNotifier.notify(
       LocalNotification(
         title: "共有 ${modifiedCourses.length} 门科目有新作业 | 成绩",
-        body: modifiedCourses.join("\n"),
+        body: modifiedCourses.length > 4 ? modifiedCourses.join(", ") : modifiedCourses.join("\n"),
       ),
     );
   }
