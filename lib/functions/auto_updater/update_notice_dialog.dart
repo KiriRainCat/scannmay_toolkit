@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:scannmay_toolkit/functions/auto_updater/auto_updater.dart';
 
 import 'package:scannmay_toolkit/main.dart';
 import 'package:scannmay_toolkit/components/unordered_list_item.dart';
+import 'package:scannmay_toolkit/functions/auto_updater/auto_updater.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 
 class UpdateNoticeDialog extends StatefulWidget {
   const UpdateNoticeDialog({
@@ -19,6 +21,16 @@ class UpdateNoticeDialog extends StatefulWidget {
 }
 
 class _UpdateNoticeDialogState extends State<UpdateNoticeDialog> {
+  @override
+  void initState() {
+    // 处理更新日志中的特殊命令
+    if (widget.logs.remove("Clear Database")) {
+      NotificationQueue.clear();
+      AssignmentNotifierBgWorker.clear();
+    }
+    super.initState();
+  }
+
   // 下载进度
   var progress = 0.0;
 

@@ -23,6 +23,12 @@ class AssignmentNotifierBgWorker {
     bgWorker = Timer.periodic(const Duration(minutes: 10), (_) => checkForNewAssignment());
   }
 
+  static void clear() async {
+    final jupiterData = await isar.jupiterDatas.filter().idEqualTo(0).findFirst();
+    jupiterData!.courses = jupiterData.courses!.toList()..removeWhere((_) => true);
+    isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
+  }
+
   static void checkForNewAssignment() async {
     //* ------------------------------- 登录 Jupiter ------------------------------ *//
     // 创建浏览器对象，根据环境决定是否使用无头模式
