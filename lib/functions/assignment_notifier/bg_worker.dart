@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:isar/isar.dart';
 import 'package:puppeteer/puppeteer.dart';
+import 'package:local_notifier/local_notifier.dart';
 
 import 'package:scannmay_toolkit/constants.dart';
 import 'package:scannmay_toolkit/model/jupiter.dart';
@@ -19,6 +20,8 @@ class AssignmentNotifierBgWorker {
 
   static void initAndStart(Isar db) {
     isar = db;
+    checkForNewAssignment();
+    bgWorker = Timer.periodic(const Duration(minutes: 10), (_) => checkForNewAssignment());
   }
 
   static void checkForNewAssignment() async {
@@ -66,6 +69,7 @@ class AssignmentNotifierBgWorker {
 
     // 遍历查询课程列表中的作业数据
     var modification = 0;
+    final modifiedCourses = [];
     for (var i = 0; i < courseCount; i++) {
       final courses = await _getCourses(jupiterPage);
       final courseName = await courses[i].evaluate("node => node.innerText");
@@ -149,6 +153,7 @@ class AssignmentNotifierBgWorker {
 
       // 修改标识自增，将数据存入对象
       modification++;
+      modifiedCourses.add(courseName);
       storedCourses.remove(course);
       storedCourses.add(course..assignments = assignments.cast());
       await Future.delayed(Constants.universalDelay);
@@ -159,6 +164,13 @@ class AssignmentNotifierBgWorker {
     if (modification == 0) return;
     jupiterData.courses = storedCourses;
     isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
+    localNotifier.notify(
+      LocalNotification(
+        title: "新作业|成绩提示",
+        subtitle: "共有 $modification 门科目有新作业 | 成绩",
+        body: modifiedCourses.join("\n"),
+      ),
+    );
   }
 
   static Future<List<ElementHandle>> _getCourses(Page jupiterPage) async {
