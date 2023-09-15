@@ -183,7 +183,7 @@ class AssignmentNotifierBgWorker {
 
   static Future<Map<String, List<Assignment>>> _findListDiff(
       List<Assignment> l1, List<Assignment> l2) async {
-    final Map<String, List<Assignment>> diff = {"new": [], "score": []};
+    final Map<String, List<Assignment>> diff = {"new": [], "score": [], "Δscore": []};
 
     for (var item in l1) {
       final searchResult = l2.where(
@@ -192,7 +192,8 @@ class AssignmentNotifierBgWorker {
       if (searchResult.isEmpty) {
         diff["new"]!.add(item);
       } else if (searchResult.first.score != item.score) {
-        diff["score"]!.add(item..score = "${searchResult.first.score} → ${item.score}");
+        diff["score"]!.add(item);
+        diff["Δscore"]!.add(item..score = "${searchResult.first.score} → ${item.score}");
       }
     }
     return diff;
