@@ -11,6 +11,14 @@ class NotificationCard extends StatelessWidget {
 
   final Message message;
 
+  String formatDueDate(String raw) {
+    if (raw.isEmpty) return "00/00";
+    final parts = raw.split("/");
+    if (parts[0].length < 2) parts[0] = "0${parts[0]}";
+    if (parts[1].length < 2) parts[1] = "0${parts[1]}";
+    return parts.join("/");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,7 +50,7 @@ class NotificationCard extends StatelessWidget {
             const SizedBox(height: 4),
             Row(
               children: [
-                Text(assignment.due!),
+                Text(formatDueDate(assignment.due!)),
                 const SizedBox(width: 12),
                 Text(
                   assignment.title!,

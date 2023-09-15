@@ -9,7 +9,6 @@ import 'package:local_notifier/local_notifier.dart';
 import 'package:scannmay_toolkit/constants.dart';
 import 'package:scannmay_toolkit/model/jupiter.dart';
 import 'package:scannmay_toolkit/model/notification.dart';
-import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 
@@ -25,6 +24,7 @@ class AssignmentNotifierBgWorker {
   }
 
   static void checkForNewAssignment() async {
+    //* ------------------------------- 登录 Jupiter ------------------------------ *//
     // 创建浏览器对象，根据环境决定是否使用无头模式
     final browser = await puppeteer.launch(
       headless: Utils.ifProduction() ? true : false,
@@ -116,11 +116,14 @@ class AssignmentNotifierBgWorker {
             ..name = courseName
             ..assignments = assignments.cast(),
         );
-        var msg = "";
-        for (var assignment in assignments) {
-          msg += "${assignment.due} ${assignment.title}\n";
-        }
-        UI.showNotification("新作业: \n$msg");
+        NotificationQueue.push(
+          Message()
+            ..time = DateTime.now()
+            ..title = "新作业提示"
+            ..course = courseName
+            ..assignments = assignments.cast(),
+        );
+        modifiedCourses.add(courseName);
         modification++;
         continue;
       }
@@ -166,7 +169,7 @@ class AssignmentNotifierBgWorker {
     isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
     localNotifier.notify(
       LocalNotification(
-        title: "新作业|成绩提示",
+        title: "共有 $modification 门科目有新作业 | 成绩",
         subtitle: "共有 $modification 门科目有新作业 | 成绩",
         body: modifiedCourses.join("\n"),
       ),
