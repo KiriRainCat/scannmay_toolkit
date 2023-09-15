@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:isar/isar.dart';
 import 'package:flutter/material.dart';
-import 'package:scannmay_toolkit/functions/utils/ui.dart';
 
 import 'package:scannmay_toolkit/model/notification.dart';
+import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/views/notification_view/notification_card.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 
@@ -63,13 +63,11 @@ class _NotificationViewState extends State<NotificationView> {
           Flex(
             direction: Axis.horizontal,
             children: [
-              const ElevatedButton(onPressed: null, child: Text("标记全部为已读")),
-              const Expanded(child: SizedBox(width: 0)),
               const ElevatedButton(onPressed: null, child: Text("前往 Jupiter Ed")),
-              const SizedBox(width: 12),
+              const Expanded(child: SizedBox()),
               ElevatedButton(
                 onPressed: clearNotificationQueue,
-                child: const Text("清空通知队列", style: TextStyle(color: Colors.red)),
+                child: const Text("清空队列", style: TextStyle(color: Colors.red)),
               ),
             ],
           ),

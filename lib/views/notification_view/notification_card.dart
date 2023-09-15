@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:scannmay_toolkit/components/rounded_button.dart';
-import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 
 import 'package:scannmay_toolkit/model/notification.dart';
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 
 class NotificationCard extends StatelessWidget {
   const NotificationCard({
@@ -71,17 +70,11 @@ class NotificationCard extends StatelessWidget {
               ],
             ),
           ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              RoundedButton(
-                width: 20,
-                height: 20,
-                onPressed: () => NotificationQueue.pop(message),
-                buttonContent: const Icon(Icons.cancel, size: 20, color: Colors.red),
-              ),
-            ],
-          )
+          IconButton(
+            onPressed: () => NotificationQueue.pop(message),
+            icon: const Icon(Icons.close),
+            tooltip: "移除",
+          ),
         ],
       ),
     );
