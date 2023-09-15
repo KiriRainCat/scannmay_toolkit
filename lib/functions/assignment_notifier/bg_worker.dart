@@ -122,7 +122,7 @@ class AssignmentNotifierBgWorker {
             ..name = courseName
             ..assignments = assignments.cast(),
         );
-        NotificationQueue.push(
+        await NotificationQueue.push(
           Message()
             ..time = DateTime.now()
             ..title = "新作业提示"
@@ -140,7 +140,7 @@ class AssignmentNotifierBgWorker {
 
       // 如果有新作业
       if (modifications["new"]!.isNotEmpty) {
-        NotificationQueue.push(
+        await NotificationQueue.push(
           Message()
             ..time = DateTime.now()
             ..title = "新作业提示"
@@ -151,12 +151,12 @@ class AssignmentNotifierBgWorker {
 
       // 如果有新成绩
       if (modifications["score"]!.isNotEmpty) {
-        NotificationQueue.push(
+        await NotificationQueue.push(
           Message()
             ..time = DateTime.now()
             ..title = "新成绩提示"
             ..course = courseName
-            ..assignments = modifications["score"],
+            ..assignments = modifications["Δscore"],
         );
       }
 
@@ -201,7 +201,12 @@ class AssignmentNotifierBgWorker {
         diff["new"]!.add(item);
       } else if (searchResult.first.score != item.score) {
         diff["score"]!.add(item);
-        diff["Δscore"]!.add(item..score = "${searchResult.first.score} → ${item.score}");
+        diff["Δscore"]!.add(
+          Assignment()
+            ..due = item.due
+            ..title = item.title
+            ..score = "${searchResult.first.score} → ${item.score}",
+        );
       }
     }
     return diff;

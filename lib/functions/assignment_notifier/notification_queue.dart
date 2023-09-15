@@ -9,12 +9,12 @@ class NotificationQueue {
     isar = db;
   }
 
-  static void push(Message msg) async {
+  static Future<void> push(Message msg) async {
     var notificationQueue = await isar.jupiterNotifications.filter().idEqualTo(0).findFirst();
     notificationQueue ??= JupiterNotification()..messages = [msg];
 
     notificationQueue.messages = notificationQueue.messages!.toList()..add(msg);
-    isar.writeTxn(() => isar.jupiterNotifications.put(notificationQueue!));
+    await isar.writeTxn(() => isar.jupiterNotifications.put(notificationQueue!));
   }
 
   static void pop(Message msg) async {
