@@ -3,25 +3,42 @@ import 'package:isar/isar.dart';
 import 'package:win32/win32.dart';
 
 import 'package:scannmay_toolkit/constants.dart';
+import 'package:scannmay_toolkit/model/setting.dart';
 import 'package:scannmay_toolkit/model/jupiter.dart';
 import 'package:scannmay_toolkit/model/notification.dart';
 
 class Utils {
   ///? 初始化与连接数据库
-  static Isar initDatabase() {
-    final isar = Isar.openSync(
-      [JupiterDataSchema, JupiterNotificationSchema],
+  static Future<Isar> initDatabase() async {
+    final isar = await Isar.open(
+      [JupiterDataSchema, JupiterNotificationSchema, SettingSchema],
       directory: Utils.ifProduction() ? Utils.getAppDir(true) : Constants.devAppDir,
     );
 
-    // 如果应用启动时数据库消息队列不存在，先创建一个避免页面报错
+    // 如果应用启动时数据库 消息队列 不存在，先创建一个避免页面报错
     if (isar.jupiterNotifications.filter().idEqualTo(0).findFirstSync() == null) {
       isar.writeTxn(() => isar.jupiterNotifications.put(JupiterNotification()..messages = []));
     }
 
-    // 如果应用启动时数据库 Jupiter 信息不存在，先创建一个避免页面报错
+    // 如果应用启动时数据库 Jupiter 信息 不存在，先创建一个避免页面报错
     if (isar.jupiterDatas.filter().idEqualTo(0).findFirstSync() == null) {
       isar.writeTxn(() => isar.jupiterDatas.put(JupiterData()..courses = []));
+    }
+
+    // 如果应用启动时数据库 默认设置 不存在，先创建一个避免页面报错
+    if (isar.settings.countSync() == 0) {
+      await isar.writeTxn(
+        () => isar.settings.putAll(
+          [
+            Setting()
+              ..name = "launchOnStartup" // 默认 开机自启 关
+              ..value = "false",
+            Setting()
+              ..name = "jupiterDataFetchInterval" // 默认 Jupiter 数据检索间隔 10 min
+              ..value = "10"
+          ],
+        ),
+      );
     }
 
     return isar;

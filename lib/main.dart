@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:system_tray/system_tray.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:local_notifier/local_notifier.dart';
-import 'package:win32_registry/win32_registry.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
+import 'package:scannmay_toolkit/functions/setting_manager.dart';
 import 'package:scannmay_toolkit/views/global_nav/global_nav_view.dart';
 import 'package:scannmay_toolkit/functions/auto_updater/auto_updater.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
@@ -26,10 +26,17 @@ void main(List<String> args) async {
   await _initAndRunApp(args);
 
   // 开启数据库
-  final isar = Utils.initDatabase();
+  final isar = await Utils.initDatabase();
+
+  // 从数据库获取用户设置
+  await SettingManager.init(isar);
 
   // 启动 Jupiter 数据定时获取进程
-  AssignmentNotifierBgWorker.initAndStart(isar);
+  AssignmentNotifierBgWorker.initAndStart(
+    db: isar,
+    immediate: true,
+    SettingManager.settings["jupiterDataFetchInterval"]!,
+  );
 
   // 启动消息队列数据库
   NotificationQueue.initQueue(isar);
@@ -96,20 +103,6 @@ Future<void> _initAndRunApp(List<String> args) async {
       _showWindow();
     },
   );
-
-  // 在 production 模式下启用开机自启动（使用注册表方案）
-  if (Utils.ifProduction()) {
-    final key = Registry.openPath(RegistryHive.currentUser,
-        path: r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run",
-        desiredAccessRights: AccessRights.allAccess);
-
-    final currentValue = key.getValueAsString("Scannmay Toolkit");
-    final targetVal = '"${Utils.getAppDir(false)}" "-startup"';
-
-    if (currentValue != targetVal) {
-      key.createValue(RegistryValue("Scannmay Toolkit", RegistryValueType.string, targetVal));
-    }
-  }
 
   // 窗口属性初始化
   windowManager.waitUntilReadyToShow(

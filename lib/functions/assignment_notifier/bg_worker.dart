@@ -15,12 +15,12 @@ import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queu
 class AssignmentNotifierBgWorker {
   static late final Isar isar;
 
-  static late final Timer bgWorker;
+  static late Timer bgWorker;
 
-  static void initAndStart(Isar db) {
-    isar = db;
-    checkForNewAssignment();
-    bgWorker = Timer.periodic(const Duration(minutes: 10), (_) => checkForNewAssignment());
+  static void initAndStart(String dataFetchInterval, {Isar? db, bool? immediate}) {
+    if (db != null) isar = db;
+    if (immediate ?? false) checkForNewAssignment();
+    bgWorker = Timer.periodic(Duration(minutes: int.parse(dataFetchInterval)), (_) => checkForNewAssignment());
   }
 
   static void clear() async {
@@ -189,8 +189,7 @@ class AssignmentNotifierBgWorker {
     return courses;
   }
 
-  static Future<Map<String, List<Assignment>>> _findListDiff(
-      List<Assignment> l1, List<Assignment> l2) async {
+  static Future<Map<String, List<Assignment>>> _findListDiff(List<Assignment> l1, List<Assignment> l2) async {
     final Map<String, List<Assignment>> diff = {"new": [], "score": [], "Δscore": []};
 
     for (var item in l1) {
