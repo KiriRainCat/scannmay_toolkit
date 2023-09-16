@@ -19,7 +19,7 @@ class AutoUpdater {
 
   ///? fetch 服务器上的 release.json 并比较版本 返回是否有更新
   static void checkForUpdate({bool atStartup = false}) async {
-    const releaseJson = "https://www.kiriraincat.eu.org/061202/files/raincat-toolkit/release.json";
+    const releaseJson = "https://www.kiriraincat.eu.org/061202/files/scannmay-toolkit/release.json";
 
     late final List releases;
     try {
@@ -61,12 +61,12 @@ class AutoUpdater {
     // 第一时间先触发一次 progress 增加，避免用户多次点击更新
     onReceiveProgress(1, 1000);
 
-    const setupFile = "RaincatToolkit-Setup.exe";
+    const setupFile = "ScannmayToolkit-Setup.exe";
 
     // 获取应用目录
     final path = "${Utils.getAppDir(true)}/$setupFile";
 
-    const setupFileUrl = "https://www.kiriraincat.eu.org/061202/files/raincat-toolkit/$setupFile";
+    const setupFileUrl = "https://www.kiriraincat.eu.org/061202/files/scannmay-toolkit/$setupFile";
     try {
       await dio.download(setupFileUrl, path, onReceiveProgress: onReceiveProgress);
     } on DioException {
