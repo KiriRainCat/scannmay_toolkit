@@ -19,7 +19,7 @@ class AssignmentNotifierBgWorker {
 
   static void initAndStart(String dataFetchInterval, {Isar? db, bool? immediate}) {
     if (db != null) isar = db;
-    if (immediate ?? false) checkForNewAssignment();
+    if (immediate ??= false) checkForNewAssignment();
     bgWorker = Timer.periodic(Duration(minutes: int.parse(dataFetchInterval)), (_) => checkForNewAssignment());
   }
 
