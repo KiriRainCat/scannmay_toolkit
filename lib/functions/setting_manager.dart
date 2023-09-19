@@ -63,7 +63,7 @@ class SettingManager {
 
   static Future<String> jupiterAccount(String name, String password) async {
     if (name.isEmpty || password.isEmpty) {
-      UI.showNotification("Jupiter ID/用户名 或密码不得为空");
+      UI.showNotification("Jupiter ID/用户名 或密码不得为空", type: NotificationType.error);
       return "";
     }
 
