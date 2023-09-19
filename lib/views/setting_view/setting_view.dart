@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:scannmay_toolkit/functions/setting_manager.dart';
 import 'package:scannmay_toolkit/views/setting_view/setting_field.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/account_querier.dart';
 
 class SettingView extends StatefulWidget {
   const SettingView({super.key});
@@ -59,6 +60,14 @@ class _SettingViewState extends State<SettingView> {
                       ),
                       const SizedBox(width: 6),
                     ],
+                  ),
+                ),
+                SettingField(
+                  property: "Jupiter 账号",
+                  desc: "用于登录 Jupiter ED 进行数据检索的学生账号",
+                  field: ElevatedButton(
+                    onPressed: () => JupiterAccountQuerier.updateAccount(),
+                    child: const Text("更改账号"),
                   ),
                 ),
               ],
