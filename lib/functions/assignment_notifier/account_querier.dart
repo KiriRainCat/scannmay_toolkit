@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import 'package:scannmay_toolkit/functions/setting_manager.dart';
+import 'package:scannmay_toolkit/functions/utils/ui.dart';
 
 class JupiterAccountQuerier {
   static Future<void> ensureAccountNotNull() async {
@@ -33,6 +34,7 @@ class _JupiterAccountQueryDialogState extends State<JupiterAccountQueryDialog> {
 
     final err = await SettingManager.jupiterAccount(nameTextController.text, passwordTextController.text);
     if (err == "success") {
+      UI.showNotification("校验成功，已保存");
       func();
       return;
     }
