@@ -10,12 +10,12 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
-import 'package:scannmay_toolkit/functions/setting_manager.dart';
 import 'package:scannmay_toolkit/views/global_nav/global_nav_view.dart';
+import 'package:scannmay_toolkit/functions/setting_manager/manager.dart';
 import 'package:scannmay_toolkit/functions/auto_updater/auto_updater.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
-import 'package:scannmay_toolkit/functions/assignment_notifier/account_querier.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
+import 'package:scannmay_toolkit/functions/setting_manager/jupiter_account_querier.dart';
 
 late final String version;
 

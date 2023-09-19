@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:scannmay_toolkit/functions/setting_manager.dart';
 import 'package:scannmay_toolkit/views/setting_view/setting_field.dart';
-import 'package:scannmay_toolkit/functions/assignment_notifier/account_querier.dart';
+import 'package:scannmay_toolkit/functions/setting_manager/manager.dart';
+import 'package:scannmay_toolkit/functions/setting_manager/jupiter_account_querier.dart';
 
 class SettingView extends StatefulWidget {
   const SettingView({super.key});

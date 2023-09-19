@@ -11,7 +11,7 @@ import 'package:scannmay_toolkit/model/jupiter.dart';
 import 'package:scannmay_toolkit/model/notification.dart';
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
-import 'package:scannmay_toolkit/functions/setting_manager.dart';
+import 'package:scannmay_toolkit/functions/setting_manager/manager.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 
 class AssignmentNotifierBgWorker {

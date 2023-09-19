@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-import 'package:scannmay_toolkit/functions/setting_manager.dart';
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
+import 'package:scannmay_toolkit/functions/setting_manager/manager.dart';
 
 class JupiterAccountQuerier {
   static Future<void> ensureAccountNotNull() async {
