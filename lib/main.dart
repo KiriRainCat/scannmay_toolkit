@@ -14,6 +14,7 @@ import 'package:scannmay_toolkit/functions/setting_manager.dart';
 import 'package:scannmay_toolkit/views/global_nav/global_nav_view.dart';
 import 'package:scannmay_toolkit/functions/auto_updater/auto_updater.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/account_querier.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 
 late final String version;
@@ -30,6 +31,9 @@ void main(List<String> args) async {
 
   // 从数据库获取用户设置
   await SettingManager.init(isar);
+
+  // 确保初次启动时用户输入 Jupiter 账号信息
+  await JupiterAccountQuerier.ensureAccountNotNull();
 
   // 启动 Jupiter 数据定时获取进程
   AssignmentNotifierBgWorker.initAndStart(

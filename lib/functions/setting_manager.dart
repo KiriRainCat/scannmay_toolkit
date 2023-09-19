@@ -24,11 +24,12 @@ class SettingManager {
   static void saveSettings(Map<String, String> newSettings) async {
     final errors = [
       await jupiterDataFetchInterval(int.parse(newSettings["jupiterDataFetchInterval"]!)),
+      await jupiterAccount(newSettings["jupiterName"]!, newSettings["jupiterPassword"]!),
     ];
 
     var msg = "";
     for (var err in errors) {
-      if (err.isNotEmpty) msg += "$err\n";
+      if (err != "success") msg += "$err\n";
     }
 
     if (msg.isNotEmpty) {
@@ -74,6 +75,30 @@ class SettingManager {
     final setting = await isar.settings.filter().nameEqualTo("jupiterDataFetchInterval").findFirst();
     isar.writeTxn(() => isar.settings.put(setting!..value = interval.toString()));
 
-    return "";
+    return "success";
+  }
+
+  static Future<String> jupiterAccount(String name, String password) async {
+    if (name.isEmpty || password.isEmpty) return "Jupiter ID/用户名 或密码不得为空";
+
+    // 检查账号密码是否可用
+    final page = await AssignmentNotifierBgWorker.openJupiterPage();
+    if (page == null) return "";
+    if (!(await AssignmentNotifierBgWorker.login(page, name: name, password: password))) return "";
+
+    settings["jupiterName"] = name;
+    settings["jupiterPassword"] = password;
+
+    // 写入数据库
+    var jupiterName = await isar.settings.filter().nameEqualTo("jupiterName").findFirst();
+    var jupiterPwd = await isar.settings.filter().nameEqualTo("jupiterPassword").findFirst();
+
+    jupiterName ??= Setting()..name = "jupiterName";
+    jupiterPwd ??= Setting()..name = "jupiterPassword";
+
+    isar.writeTxn(() => isar.settings.put(jupiterName!..value = name));
+    isar.writeTxn(() => isar.settings.put(jupiterPwd!..value = password));
+
+    return "success";
   }
 }
