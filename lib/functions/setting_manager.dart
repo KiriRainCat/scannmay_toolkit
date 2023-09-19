@@ -24,7 +24,6 @@ class SettingManager {
   static void saveSettings(Map<String, String> newSettings) async {
     final errors = [
       await jupiterDataFetchInterval(int.parse(newSettings["jupiterDataFetchInterval"]!)),
-      await jupiterAccount(newSettings["jupiterName"]!, newSettings["jupiterPassword"]!),
     ];
 
     var msg = "";
@@ -62,24 +61,11 @@ class SettingManager {
     isar.writeTxn(() => isar.settings.put(setting!..value = flag.toString()));
   }
 
-  //* ------------------------------- 需要保存生效的设置 ------------------------------ *//
-  static Future<String> jupiterDataFetchInterval(int interval) async {
-    if (interval < 10 || interval > 120) return "数据检索间隔不合法：$interval";
-    settings["jupiterDataFetchInterval"] = interval.toString();
-
-    // 重启 Jupiter 数据检索 后台进程
-    AssignmentNotifierBgWorker.bgWorker.cancel();
-    AssignmentNotifierBgWorker.initAndStart(settings["jupiterDataFetchInterval"]!);
-
-    // 写入数据库
-    final setting = await isar.settings.filter().nameEqualTo("jupiterDataFetchInterval").findFirst();
-    isar.writeTxn(() => isar.settings.put(setting!..value = interval.toString()));
-
-    return "success";
-  }
-
   static Future<String> jupiterAccount(String name, String password) async {
-    if (name.isEmpty || password.isEmpty) return "Jupiter ID/用户名 或密码不得为空";
+    if (name.isEmpty || password.isEmpty) {
+      UI.showNotification("Jupiter ID/用户名 或密码不得为空");
+      return "";
+    }
 
     // 检查账号密码是否可用
     final page = await AssignmentNotifierBgWorker.openJupiterPage();
@@ -98,6 +84,22 @@ class SettingManager {
 
     isar.writeTxn(() => isar.settings.put(jupiterName!..value = name));
     isar.writeTxn(() => isar.settings.put(jupiterPwd!..value = password));
+
+    return "success";
+  }
+
+  //* ------------------------------- 需要保存生效的设置 ------------------------------ *//
+  static Future<String> jupiterDataFetchInterval(int interval) async {
+    if (interval < 10 || interval > 120) return "数据检索间隔不合法：$interval";
+    settings["jupiterDataFetchInterval"] = interval.toString();
+
+    // 重启 Jupiter 数据检索 后台进程
+    AssignmentNotifierBgWorker.bgWorker.cancel();
+    AssignmentNotifierBgWorker.initAndStart(settings["jupiterDataFetchInterval"]!);
+
+    // 写入数据库
+    final setting = await isar.settings.filter().nameEqualTo("jupiterDataFetchInterval").findFirst();
+    isar.writeTxn(() => isar.settings.put(setting!..value = interval.toString()));
 
     return "success";
   }
