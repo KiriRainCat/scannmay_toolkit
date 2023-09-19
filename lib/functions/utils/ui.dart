@@ -7,26 +7,23 @@ class UI {
     String message, {
     NotificationType type = NotificationType.info,
   }) {
-    // 根据消息框类型决定图标与背景色
-    late final Color bgColor;
+    // 根据消息框类型决定图标，背景色，字体色
     late final Icon icon;
 
     switch (type) {
       case NotificationType.error:
         icon = Icon(Icons.error, color: Colors.red.shade600);
-        bgColor = Colors.red.withOpacity(0.6);
         break;
       default:
         icon = Icon(Icons.info, color: Colors.blue.shade600);
-        bgColor = Colors.white60;
     }
 
     return Get.snackbar(
       "null",
       "null",
       barBlur: 0,
-      backgroundColor: bgColor,
-      margin: const EdgeInsets.fromLTRB(78, 6, 0, 0),
+      backgroundColor: Colors.white70,
+      margin: const EdgeInsets.only(top: 6),
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
       animationDuration: const Duration(milliseconds: 500),
       maxWidth: 70 + message.length * 14,
