@@ -97,9 +97,11 @@ class SettingManager {
 
     if (token == null) {
       isar.writeTxn(() => isar.settings.delete(loginTokenSetting!.id));
+      settings.remove("loginToken");
       return;
     }
 
+    settings["loginToken"] = token;
     isar.writeTxn(() => isar.settings.put(loginTokenSetting!));
   }
 
