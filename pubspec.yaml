@@ -19,6 +19,7 @@ dependencies:
   package_info_plus: ^4.1.0
   puppeteer: ^3.3.0
   system_tray: ^2.0.3
+  url_launcher: ^6.1.14
   win32: ^4.1.4
   win32_registry: ^1.1.0
   window_manager: ^0.3.5

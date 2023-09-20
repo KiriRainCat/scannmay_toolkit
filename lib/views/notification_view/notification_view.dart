@@ -7,6 +7,7 @@ import 'package:scannmay_toolkit/model/notification.dart';
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/views/notification_view/notification_card.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NotificationView extends StatefulWidget {
   const NotificationView({super.key});
@@ -63,7 +64,10 @@ class _NotificationViewState extends State<NotificationView> {
           Flex(
             direction: Axis.horizontal,
             children: [
-              const ElevatedButton(onPressed: null, child: Text("前往 Jupiter Ed")),
+              ElevatedButton(
+                onPressed: () => launchUrl(Uri.parse("https://login.jupitered.com/login/")),
+                child: const Text("前往 Jupiter Ed"),
+              ),
               const Expanded(child: SizedBox()),
               ElevatedButton(
                 onPressed: clearNotificationQueue,
