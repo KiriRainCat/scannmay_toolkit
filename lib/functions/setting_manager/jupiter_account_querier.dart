@@ -36,7 +36,6 @@ class _JupiterAccountQueryDialogState extends State<JupiterAccountQueryDialog> {
     if (err == "success") {
       UI.showNotification("校验成功，已保存");
       func();
-      return;
     }
 
     setState(() => loading = false);
