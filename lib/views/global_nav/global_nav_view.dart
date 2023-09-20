@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scannmay_toolkit/functions/auth_manager.dart';
 
 import 'package:scannmay_toolkit/views/global_nav/destinations.dart';
 import 'package:scannmay_toolkit/views/global_nav/window_controls.dart';
@@ -28,22 +29,30 @@ class _GlobalNavViewState extends State<GlobalNavView> {
     return Scaffold(
       body: Row(
         children: [
-          NavigationRail(
-            extended: navExpanded,
-            leading: Column(
-              children: [
-                const SizedBox(height: 8),
-                // TODO: 做个日夜图标轮换 day.png / night.png
-                Image.asset("assets/images/night.png", width: 50, isAntiAlias: true),
-                IconButton(
-                  onPressed: () => setState(() => navExpanded = !navExpanded),
-                  icon: menuIcon,
+          Column(
+            children: [
+              Expanded(
+                child: NavigationRail(
+                  extended: navExpanded,
+                  leading: Column(
+                    children: [
+                      const SizedBox(height: 8),
+                      // TODO: 做个日夜图标轮换 day.png / night.png
+                      Image.asset("assets/images/night.png", width: 50, isAntiAlias: true),
+                      IconButton(
+                        onPressed: () => setState(() => navExpanded = !navExpanded),
+                        icon: menuIcon,
+                      ),
+                    ],
+                  ),
+                  destinations: destinations,
+                  onDestinationSelected: (value) => setState(() => selectedNavIndex = value),
+                  selectedIndex: selectedNavIndex,
                 ),
-              ],
-            ),
-            destinations: destinations,
-            onDestinationSelected: (value) => setState(() => selectedNavIndex = value),
-            selectedIndex: selectedNavIndex,
+              ),
+              const IconButton(onPressed: AuthManager.logout, icon: Icon(Icons.logout, color: Colors.red)),
+              const SizedBox(height: 12),
+            ],
           ),
           Expanded(
             child: Container(

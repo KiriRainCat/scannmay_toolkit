@@ -42,17 +42,19 @@ class AuthManager {
     late final Response res;
     try {
       res = await dio.post("/auth/logout", queryParameters: {"token": SettingManager.settings["loginToken"]});
-    } on DioException {
-      if (res.statusCode != 404) {
-        UI.showNotification(res.data["msg"], type: NotificationType.error);
+    } on DioException catch (e) {
+      if (e.response?.statusCode != 404) {
+        UI.showNotification(e.response?.data["msg"], type: NotificationType.error);
         return false;
       }
+
       UI.showNotification("远程服务器离线或网络错误", type: NotificationType.error);
       return false;
     }
 
     UI.showNotification(res.data["msg"]);
     SettingManager.loginToken();
+    ensureLoggedIn();
     return true;
   }
 }
