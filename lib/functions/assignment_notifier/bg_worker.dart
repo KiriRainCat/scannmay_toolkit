@@ -229,7 +229,7 @@ class AssignmentNotifierBgWorker {
         await Future.delayed(Constants.universalDelay);
       }
     } catch (e) {
-      UI.showNotification("Chromium 自动化浏览器出现上下文异常，将进行额外两次重试: $e", type: NotificationType.error);
+      UI.showNotification("Chromium 自动化浏览器出现上下文异常，将进行重试: $e", type: NotificationType.error);
       browser.close();
       checkForNewAssignment();
       return;
