@@ -4,4 +4,6 @@ class Constants {
 
   // 通用延时时长
   static const universalDelay = Duration(seconds: 1, milliseconds: 500);
+
+  static const appAuthToken = "ScannmayToolkitKiriRainCat20230920";
 }

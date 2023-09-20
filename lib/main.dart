@@ -10,6 +10,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
+import 'package:scannmay_toolkit/functions/auth_manager.dart';
 import 'package:scannmay_toolkit/views/global_nav/global_nav_view.dart';
 import 'package:scannmay_toolkit/functions/setting_manager/manager.dart';
 import 'package:scannmay_toolkit/functions/auto_updater/auto_updater.dart';
@@ -31,6 +32,9 @@ void main(List<String> args) async {
 
   // 从数据库获取用户设置
   await SettingManager.init(isar);
+
+  // 确保用户已登录
+  await AuthManager.ensureLoggedIn();
 
   // 确保初次启动时用户输入 Jupiter 账号信息
   await JupiterAccountQuerier.ensureAccountNotNull();

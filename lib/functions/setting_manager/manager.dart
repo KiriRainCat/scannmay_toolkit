@@ -88,6 +88,21 @@ class SettingManager {
     return "success";
   }
 
+  ///? 删除或写入 loginToken 设置值，如果 token 未传入，进行删除操作
+  static Future<void> loginToken({String? token}) async {
+    var loginTokenSetting = await isar.settings.filter().nameEqualTo("loginToken").findFirst();
+    loginTokenSetting ??= Setting()
+      ..name = "loginToken"
+      ..value = token;
+
+    if (token == null) {
+      isar.writeTxn(() => isar.settings.delete(loginTokenSetting!.id));
+      return;
+    }
+
+    isar.writeTxn(() => isar.settings.put(loginTokenSetting!));
+  }
+
   //* ------------------------------- 需要保存生效的设置 ------------------------------ *//
   static Future<String> jupiterDataFetchInterval(int interval) async {
     if (interval < 10 || interval > 120) return "数据检索间隔不合法：$interval";
