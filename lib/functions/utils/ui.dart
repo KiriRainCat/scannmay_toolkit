@@ -27,17 +27,19 @@ class UI {
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
       duration: const Duration(milliseconds: 1800),
       animationDuration: const Duration(milliseconds: 500),
-      maxWidth: 70 + message.length * 14,
+      maxWidth: 360,
       titleText: const SizedBox(height: 0),
       messageText: Row(
         children: [
           icon,
           const SizedBox(width: 8),
-          Text(
-            message,
-            style: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w600,
+          Expanded(
+            child: Text(
+              message,
+              style: const TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
