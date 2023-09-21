@@ -93,6 +93,8 @@ class AssignmentNotifierBgWorker {
     // 判断是否登录成功
     try {
       await jupiterPage.waitForSelector("div[class='toptabnull']", timeout: const Duration(seconds: 5));
+
+      // 用于特殊调用，直接检查账号是否可用
       if (name != null && password != null) {
         browser.close();
         return true;
@@ -104,15 +106,23 @@ class AssignmentNotifierBgWorker {
     }
 
     // 选择最新学年
-    await jupiterPage.waitForSelector("div[class='hide null']");
-    await jupiterPage.click("#schoolyeartab");
-    await Future.delayed(Constants.universalDelay);
-    await jupiterPage.click("#schoolyearlist > div:nth-child(1)");
+    try {
+      await jupiterPage.waitForSelector("div[class='hide null']");
+      await jupiterPage.click("#schoolyeartab");
+      await Future.delayed(Constants.universalDelay);
+      await jupiterPage.click("#schoolyearlist > div:nth-child(1)");
+    } catch (e) {
+      UI.showNotification("学年列表出现异常，无法正常选择最新学年", type: NotificationType.error);
+      return false;
+    }
 
     return true;
   }
 
-  static void checkForNewAssignment() async {
+  static void checkForNewAssignment({int? retry}) async {
+    // 如果传入的 retry 为 0 直接终止
+    if (retry == 0) return;
+
     // 打开自动化浏览器并前往 Jupiter 登录页
     final jupiterPage = await openJupiterPage();
     if (jupiterPage == null) return;
@@ -238,7 +248,7 @@ class AssignmentNotifierBgWorker {
     } catch (e) {
       UI.showNotification("Chromium 自动化浏览器出现上下文异常，将进行重试: $e", type: NotificationType.error);
       browser.close();
-      checkForNewAssignment();
+      checkForNewAssignment(retry: retry == null ? 2 : --retry);
       return;
     }
 
