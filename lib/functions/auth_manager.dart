@@ -5,6 +5,7 @@ import 'package:scannmay_toolkit/constants.dart';
 
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/functions/setting_manager/manager.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
 
 class AuthManager {
   static final dio = Dio(
@@ -52,6 +53,7 @@ class AuthManager {
 
     UI.showNotification(res.data["msg"]);
     await SettingManager.loginToken();
+    AssignmentNotifierBgWorker.forceStop();
     ensureLoggedIn();
   }
 }

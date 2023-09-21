@@ -135,7 +135,7 @@ Future<void> _initAndRunApp(List<String> args) async {
   // 注册系统托盘菜单
   Menu menu = Menu();
   await menu.buildFrom([
-    MenuItemLabel(label: "关闭应用", onClicked: (menuItem) => windowManager.destroy()),
+    MenuItemLabel(label: "关闭应用", onClicked: (menuItem) => _disposeAndDestroy()),
   ]);
   await systemTray.setContextMenu(menu);
 
@@ -190,4 +190,9 @@ void _showWindow() async {
   await windowManager.center();
   windowManager.show();
   windowManager.focus();
+}
+
+void _disposeAndDestroy() {
+  AssignmentNotifierBgWorker.forceStop();
+  windowManager.destroy();
 }

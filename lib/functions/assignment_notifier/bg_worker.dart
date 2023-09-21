@@ -30,6 +30,13 @@ class AssignmentNotifierBgWorker {
     bgWorker = Timer.periodic(Duration(minutes: int.parse(dataFetchInterval)), (_) => checkForNewAssignment());
   }
 
+  static void forceStop() {
+    try {
+      AssignmentNotifierBgWorker.bgWorker.cancel();
+      AssignmentNotifierBgWorker.browser.close();
+    } catch (_) {}
+  }
+
   static void clear() async {
     final jupiterData = await isar.jupiterDatas.filter().idEqualTo(0).findFirst();
     jupiterData!.courses = jupiterData.courses!.toList()..removeWhere((_) => true);
