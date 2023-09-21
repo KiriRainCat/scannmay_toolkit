@@ -1,5 +1,6 @@
 import 'package:ffi/ffi.dart';
 import 'package:isar/isar.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:win32/win32.dart';
 
 import 'package:scannmay_toolkit/constants.dart';
@@ -68,8 +69,14 @@ class Utils {
     return const bool.fromEnvironment("dart.vm.product");
   }
 
+  ///? 格式化 DateTime 为人能读的 String
   static String formatTime(DateTime time) {
     final timeStr = time.toString();
     return timeStr.substring(0, timeStr.length - 7);
+  }
+
+  ///? 通过用户默认浏览器打开指定 URL
+  static void openUrl(String url) {
+    launchUrl(Uri.parse(url));
   }
 }
