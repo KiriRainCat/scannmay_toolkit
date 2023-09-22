@@ -266,25 +266,25 @@ class AssignmentNotifierBgWorker {
     );
 
     // 浏览器关闭前检测是否需要检索作业详情信息
-    if (assignmentsAwaitDesc.isNotEmpty) {
-      try {
-        for (var entry in assignmentsAwaitDesc.entries) {
-          final courses = await _getCourses(jupiterPage);
-          final courseName = await courses[entry.key].evaluate("node => node.innerText");
+    if (assignmentsAwaitDesc.isNotEmpty && assignmentsAwaitDesc.length < 20) {
+      for (var entry in assignmentsAwaitDesc.entries) {
+        final courses = await _getCourses(jupiterPage);
+        final courseName = await courses[entry.key].evaluate("node => node.innerText");
 
+        try {
           courses[entry.key].hover();
           await Future.delayed(Constants.universalDelay);
           jupiterPage.mouse.down();
           jupiterPage.mouse.up();
           await jupiterPage.waitForSelector("div[class='hide null']");
           await Future.delayed(Constants.universalDelay);
-
-          final course = jupiterData.courses!.firstWhere((course) => (course.name == courseName));
-          await _getAssignmentDesc(jupiterPage, course, entry.value);
+        } catch (e) {
+          UI.showNotification("Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败: $e", type: NotificationType.error);
+          browser.close();
         }
-      } catch (e) {
-        UI.showNotification("Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败: $e", type: NotificationType.error);
-        browser.close();
+
+        final course = jupiterData.courses!.firstWhere((course) => (course.name == courseName));
+        await _getAssignmentDesc(jupiterPage, course, entry.value);
       }
 
       // 再次写入数据库
@@ -294,11 +294,14 @@ class AssignmentNotifierBgWorker {
   }
 
   static Future<void> _getAssignmentDesc(Page jupiterPage, Course course, List<Assignment> assignments) async {
-    for (var assignment in assignments) {
-      final handles = await jupiterPage.$$("table > tbody[click*='goassign'] > tr:nth-child(2)");
-      final List titles = await jupiterPage.$$eval(
-        "table > tbody[click*='goassign'] > tr:nth-child(2)",
-        """assignments => {
+    var timesOfErr = 0;
+
+    for (var i = 0; i < assignments.length; i++) {
+      try {
+        final handles = await jupiterPage.$$("table > tbody[click*='goassign'] > tr:nth-child(2)");
+        final List titles = await jupiterPage.$$eval(
+          "table > tbody[click*='goassign'] > tr:nth-child(2)",
+          """assignments => {
             const filterdList = [];
             assignments.map(item => {
               const title = item.cells[2].innerText;
@@ -306,18 +309,38 @@ class AssignmentNotifierBgWorker {
             })
             return filterdList;
         }""",
-      );
+        );
 
-      handles[titles.indexWhere((title) => title == assignment.title)].hover();
-      await Future.delayed(Constants.universalDelay);
-      jupiterPage.mouse.down();
-      jupiterPage.mouse.up();
-      await jupiterPage.waitForSelector("div[class='hide null']");
-      await Future.delayed(Constants.universalDelay);
+        handles[titles.indexWhere((title) => title == assignments[i].title)].hover();
+        await Future.delayed(Constants.universalDelay);
+        jupiterPage.mouse.down();
+        jupiterPage.mouse.up();
+        await jupiterPage.waitForSelector("div[class='hide null']");
+        await Future.delayed(Constants.universalDelay);
+      } catch (e) {
+        if (timesOfErr > 3) {
+          UI.showNotification("Chromium 自动化浏览器出现多次上下文异常，作业详情信息获取失败: $e", type: NotificationType.error);
+          browser.close();
+          timesOfErr = 0;
+          continue;
+        }
+        timesOfErr++;
+        i--;
+      }
 
-      final desc = await jupiterPage.$eval("div[style='padding:0px 20px; max-width:472px;']", "node => node.innerText");
-      course.assignments!.firstWhere((item) => item.title == assignment.title).desc = desc;
+      late final String desc;
+      try {
+        desc = await jupiterPage.$eval(
+          "div[style='padding:0px 20px; max-width:472px;']",
+          "node => node.innerText",
+        );
+      } catch (_) {
+        jupiterPage.click("div[script*='grades']");
+        continue;
+      }
 
+      // 更新数据 + 返回 Assignments 页面
+      course.assignments!.firstWhere((item) => item.title == assignments[i].title).desc = desc;
       jupiterPage.click("div[script*='grades']");
     }
   }
