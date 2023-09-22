@@ -255,7 +255,10 @@ class AssignmentNotifierBgWorker {
     }
 
     // 如无修改就不再写入数据库，反之写入
-    if (modification == 0) return;
+    if (modification == 0) {
+      browser.close();
+      return;
+    }
     jupiterData.courses = storedCourses;
     isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
     localNotifier.notify(
