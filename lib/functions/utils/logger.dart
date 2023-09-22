@@ -12,12 +12,11 @@ class Log {
     printer: PrettyPrinter(
       colors: false,
       methodCount: 0,
+      lineLength: 60,
       printTime: true,
-      printEmojis: false,
-      noBoxingByDefault: true,
       levelEmojis: {
-        Level.info: "Info: ",
-        Level.error: "Err: ",
+        Level.info: "Info:",
+        Level.error: "Err:",
       },
     ),
   );

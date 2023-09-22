@@ -264,6 +264,7 @@ class AssignmentNotifierBgWorker {
     // 如无修改就不再写入数据库，反之写入
     if (modification == 0) {
       browser.close();
+      Log.logger.i("浏览器关闭");
       return;
     }
     jupiterData.courses = storedCourses;
@@ -302,7 +303,7 @@ class AssignmentNotifierBgWorker {
       isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
     }
     browser.close();
-    Log.logger.e("浏览器关闭");
+    Log.logger.i("浏览器关闭");
   }
 
   static Future<void> _getAssignmentDesc(Page jupiterPage, Course course, List<Assignment> assignments) async {
