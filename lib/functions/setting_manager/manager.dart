@@ -4,6 +4,7 @@ import 'package:win32_registry/win32_registry.dart';
 import 'package:scannmay_toolkit/model/setting.dart';
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
+import 'package:scannmay_toolkit/functions/utils/logger.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
 
 class SettingManager {
@@ -32,6 +33,7 @@ class SettingManager {
     }
 
     if (msg.isNotEmpty) {
+      Log.logger.e("设置保存异常: $msg");
       UI.showNotification(msg.substring(0, msg.length - 1));
     } else {
       UI.showNotification("保存成功");

@@ -11,6 +11,7 @@ import 'package:window_manager/window_manager.dart';
 import 'package:scannmay_toolkit/main.dart';
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
+import 'package:scannmay_toolkit/functions/utils/logger.dart';
 import 'package:scannmay_toolkit/functions/auto_updater/update_notice_dialog.dart';
 
 class AutoUpdater {
@@ -25,6 +26,7 @@ class AutoUpdater {
     try {
       releases = (await dio.get(releaseJson)).data;
     } on DioException {
+      Log.logger.e("远程服务器离线或网络错误");
       UI.showNotification("远程服务器离线或网络错误", type: NotificationType.error);
       return;
     }
@@ -70,6 +72,7 @@ class AutoUpdater {
     try {
       await dio.download(setupFileUrl, path, onReceiveProgress: onReceiveProgress);
     } on DioException {
+      Log.logger.e("远程服务器离线或网络错误");
       UI.showNotification("远程服务器离线或网络错误", type: NotificationType.error);
       return;
     }

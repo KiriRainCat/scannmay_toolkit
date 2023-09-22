@@ -11,6 +11,7 @@ import 'package:scannmay_toolkit/model/jupiter.dart';
 import 'package:scannmay_toolkit/model/notification.dart';
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
+import 'package:scannmay_toolkit/functions/utils/logger.dart';
 import 'package:scannmay_toolkit/functions/setting_manager/manager.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 
@@ -52,8 +53,10 @@ class AssignmentNotifierBgWorker {
         defaultViewport: null,
       );
       jupiterPage = await browser.newPage();
+      Log.logger.i("浏览器启动");
     } catch (e) {
       browser.close();
+      Log.logger.e("浏览器关闭", error: e);
       UI.showNotification("Chromium 自动化浏览器启动异常: $e", type: NotificationType.error);
       return null;
     }
@@ -64,6 +67,7 @@ class AssignmentNotifierBgWorker {
       await jupiterPage.waitForSelector("#text_school1");
     } catch (e) {
       browser.close();
+      Log.logger.e("浏览器关闭", error: e);
       UI.showNotification("网络错误，无法打开 Jupiter: $e", type: NotificationType.error);
       return null;
     }
@@ -101,6 +105,7 @@ class AssignmentNotifierBgWorker {
       }
     } catch (_) {
       browser.close();
+      Log.logger.e("浏览器关闭", error: "Jupiter 账号或密码错误");
       UI.showNotification("Jupiter 账号或密码错误", type: NotificationType.error);
       return false;
     }
@@ -112,6 +117,7 @@ class AssignmentNotifierBgWorker {
       await Future.delayed(Constants.universalDelay);
       await jupiterPage.click("#schoolyearlist > div:nth-child(1)");
     } catch (e) {
+      Log.logger.e("浏览器关闭", error: e);
       UI.showNotification("学年列表出现异常，无法正常选择最新学年", type: NotificationType.error);
       return false;
     }
@@ -248,6 +254,7 @@ class AssignmentNotifierBgWorker {
         await Future.delayed(Constants.universalDelay);
       }
     } catch (e) {
+      Log.logger.e("浏览器关闭", error: e);
       UI.showNotification("Chromium 自动化浏览器出现上下文异常，将进行重试: $e", type: NotificationType.error);
       browser.close();
       checkForNewAssignment(retry: retry == null ? 2 : --retry);
@@ -282,6 +289,7 @@ class AssignmentNotifierBgWorker {
           await jupiterPage.waitForSelector("div[class='hide null']");
           await Future.delayed(Constants.universalDelay);
         } catch (e) {
+          Log.logger.e("浏览器关闭", error: e);
           UI.showNotification("Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败: $e", type: NotificationType.error);
           browser.close();
         }
@@ -294,6 +302,7 @@ class AssignmentNotifierBgWorker {
       isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
     }
     browser.close();
+    Log.logger.e("浏览器关闭");
   }
 
   static Future<void> _getAssignmentDesc(Page jupiterPage, Course course, List<Assignment> assignments) async {
@@ -322,8 +331,9 @@ class AssignmentNotifierBgWorker {
         await Future.delayed(Constants.universalDelay);
       } catch (e) {
         if (timesOfErr > 3) {
-          UI.showNotification("Chromium 自动化浏览器出现多次上下文异常，作业详情信息获取失败: $e", type: NotificationType.error);
           browser.close();
+          Log.logger.e("浏览器关闭", error: e);
+          UI.showNotification("Chromium 自动化浏览器出现多次上下文异常，作业详情信息获取失败: $e", type: NotificationType.error);
           timesOfErr = 0;
           continue;
         }

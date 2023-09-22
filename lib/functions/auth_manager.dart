@@ -4,6 +4,7 @@ import 'package:get/get.dart' hide Response;
 import 'package:scannmay_toolkit/constants.dart';
 
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
+import 'package:scannmay_toolkit/functions/utils/logger.dart';
 import 'package:scannmay_toolkit/functions/setting_manager/manager.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
 
@@ -30,6 +31,7 @@ class AuthManager {
         return false;
       }
 
+      Log.logger.e("远程服务器离线或网络错误");
       UI.showNotification("远程服务器离线或网络错误", type: NotificationType.error);
       return false;
     }
@@ -48,6 +50,7 @@ class AuthManager {
         UI.showNotification(e.response?.data["msg"], type: NotificationType.error);
       }
 
+      Log.logger.e("远程服务器离线或网络错误");
       UI.showNotification("远程服务器离线或网络错误", type: NotificationType.error);
     }
 
