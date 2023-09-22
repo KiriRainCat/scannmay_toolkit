@@ -153,6 +153,7 @@ class AssignmentNotifierBgWorker {
     // 遍历查询课程列表中的作业数据
     var modification = 0;
     final modifiedCourses = [];
+    final Map<int, List<Assignment>> assignmentsAwaitDesc = {};
     try {
       for (var i = 0; i < courseCount; i++) {
         final courses = await _getCourses(jupiterPage);
@@ -225,6 +226,7 @@ class AssignmentNotifierBgWorker {
               ..course = courseName
               ..assignments = modifications["new"],
           );
+          assignmentsAwaitDesc.addAll({i: modifications["new"]!});
         }
 
         // 如果有新成绩
@@ -253,7 +255,6 @@ class AssignmentNotifierBgWorker {
     }
 
     // 如无修改就不再写入数据库，反之写入
-    browser.close();
     if (modification == 0) return;
     jupiterData.courses = storedCourses;
     isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
@@ -263,6 +264,62 @@ class AssignmentNotifierBgWorker {
         body: modifiedCourses.length > 4 ? modifiedCourses.join(", ") : modifiedCourses.join("\n"),
       ),
     );
+
+    // 浏览器关闭前检测是否需要检索作业详情信息
+    if (assignmentsAwaitDesc.isNotEmpty) {
+      try {
+        for (var entry in assignmentsAwaitDesc.entries) {
+          final courses = await _getCourses(jupiterPage);
+          final courseName = await courses[entry.key].evaluate("node => node.innerText");
+
+          courses[entry.key].hover();
+          await Future.delayed(Constants.universalDelay);
+          jupiterPage.mouse.down();
+          jupiterPage.mouse.up();
+          await jupiterPage.waitForSelector("div[class='hide null']");
+          await Future.delayed(Constants.universalDelay);
+
+          final course = jupiterData.courses!.firstWhere((course) => (course.name == courseName));
+          await _getAssignmentDesc(jupiterPage, course, entry.value);
+        }
+      } catch (e) {
+        UI.showNotification("Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败: $e", type: NotificationType.error);
+        browser.close();
+      }
+
+      // 再次写入数据库
+      isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
+    }
+    browser.close();
+  }
+
+  static Future<void> _getAssignmentDesc(Page jupiterPage, Course course, List<Assignment> assignments) async {
+    for (var assignment in assignments) {
+      final handles = await jupiterPage.$$("table > tbody[click*='goassign'] > tr:nth-child(2)");
+      final List titles = await jupiterPage.$$eval(
+        "table > tbody[click*='goassign'] > tr:nth-child(2)",
+        """assignments => {
+            const filterdList = [];
+            assignments.map(item => {
+              const title = item.cells[2].innerText;
+              filterdList.push(title)
+            })
+            return filterdList;
+        }""",
+      );
+
+      handles[titles.indexWhere((title) => title == assignment.title)].hover();
+      await Future.delayed(Constants.universalDelay);
+      jupiterPage.mouse.down();
+      jupiterPage.mouse.up();
+      await jupiterPage.waitForSelector("div[class='hide null']");
+      await Future.delayed(Constants.universalDelay);
+
+      final desc = await jupiterPage.$eval("div[style='padding:0px 20px; max-width:472px;']", "node => node.innerText");
+      course.assignments!.firstWhere((item) => item.title == assignment.title).desc = desc;
+
+      jupiterPage.click("div[script*='grades']");
+    }
   }
 
   static Future<List<ElementHandle>> _getCourses(Page jupiterPage) async {

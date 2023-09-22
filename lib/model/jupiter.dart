@@ -28,5 +28,7 @@ class Assignment {
 
   String? title;
 
+  String? desc;
+
   String? score;
 }
