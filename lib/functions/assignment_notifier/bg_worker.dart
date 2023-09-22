@@ -276,7 +276,7 @@ class AssignmentNotifierBgWorker {
     );
 
     // 浏览器关闭前检测是否需要检索作业详情信息
-    if (assignmentsAwaitDesc.isNotEmpty && assignmentsAwaitDesc.length < 20) {
+    if (assignmentsAwaitDesc.isNotEmpty && assignmentsAwaitDesc.length < 12) {
       for (var entry in assignmentsAwaitDesc.entries) {
         final courses = await _getCourses(jupiterPage);
         final courseName = await courses[entry.key].evaluate("node => node.innerText");
@@ -327,7 +327,7 @@ class AssignmentNotifierBgWorker {
         await Future.delayed(Constants.universalDelay);
         jupiterPage.mouse.down();
         jupiterPage.mouse.up();
-        await jupiterPage.waitForSelector("div[class='hide null']");
+        await jupiterPage.waitForSelector("div[class='hide null']", timeout: const Duration(minutes: 1));
         await Future.delayed(Constants.universalDelay);
       } catch (e) {
         if (timesOfErr > 3) {

@@ -15,6 +15,10 @@ class Log {
       printTime: true,
       printEmojis: false,
       noBoxingByDefault: true,
+      levelEmojis: {
+        Level.info: "Info: ",
+        Level.error: "Err: ",
+      },
     ),
   );
 
@@ -23,7 +27,7 @@ class Log {
     if (!logPath.existsSync()) logPath.createSync();
 
     final time = DateTime.now();
-    final logFile = File("$logPath/${time.year}-${time.month}-${time.day}-logs.txt");
+    final logFile = File("${logPath.path}/${time.year}-${time.month}-${time.day}-logs.txt");
 
     if (!logFile.existsSync()) logFile.createSync();
     return logFile;
