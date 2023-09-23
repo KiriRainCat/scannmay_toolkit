@@ -8,13 +8,13 @@
 
 ### 初次启动
 
-- ![image-20230923100616604](C:\Code\Projects\Large_Projects\scannmay_toolkit\.vscode\docs\assets\login-zh-CN.png)
+- ![login-zh-CN](assets/login-zh-CN.png)
 
 - 初次启动需要进行登录，此处为软件账号
 
 - **如提示远程服务器离线，请立即联系开发者**
 
-- ![image-20230923101049743](C:\Code\Projects\Large_Projects\scannmay_toolkit\.vscode\docs\assets\jupiter-login-zh-CN.png)
+- ![jupiter-login-zh-CN](assets/jupiter-login-zh-CN.png)
 - 之后会询问 Jupiter 账号
 - 初次启动软件可能在此处会出现进度条转很久的情况，请耐心等待，是在下载必须的依赖资源
 - SID 为学生id 比如说 1279
@@ -26,7 +26,7 @@
 
 ### 界面概览
 
-- ![image-20230923100145484](C:\Code\Projects\Large_Projects\scannmay_toolkit\.vscode\docs\assets\ui-overview-zh-CN.png)
+- ![ui-overview-zh-CN](assets/ui-overview-zh-CN.png)
 
 
 
@@ -34,10 +34,10 @@
 
 ### 作业通知队列页
 
-- ![image-20230923101553608](C:\Code\Projects\Large_Projects\scannmay_toolkit\.vscode\docs\assets\message-queue-zh-CN.png)
+- ![message-queue-zh-CN](assets/message-queue-zh-CN.png)
 
 - 展开详情后界面大概长这样
-- ![image-20230923101741895](C:\Code\Projects\Large_Projects\scannmay_toolkit\.vscode\docs\assets\homework-info.png)
+- ![homework-info](assets/homework-info.png)
 
 
 
