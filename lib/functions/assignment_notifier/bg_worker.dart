@@ -77,21 +77,42 @@ class AssignmentNotifierBgWorker {
 
   static Future<bool> login(Page jupiterPage, {String? name, String? password}) async {
     // 填入学校信息
-    await jupiterPage.type("#text_school1", "Georgia School Ningbo");
-    await jupiterPage.type("#text_city1", "Ningbo");
-    await jupiterPage.click("#showcity > div.menuspace");
-    await Future.delayed(Constants.universalDelay);
-    await jupiterPage.click("#menulist_region1 > div[val='xx_xx']");
+    try {
+      await jupiterPage.type("#text_school1", "Georgia School Ningbo");
+      await jupiterPage.type("#text_city1", "Ningbo");
+      await jupiterPage.click("#showcity > div.menuspace");
+      await Future.delayed(Constants.universalDelay);
+      await jupiterPage.click("#menulist_region1 > div[val='xx_xx']");
+    } catch (e) {
+      browser.close();
+      Log.logger.e("浏览器关闭", error: e);
+      UI.showNotification("登录 Jupiter 时发生未知异常", type: NotificationType.error);
+      return false;
+    }
 
     // 进行登录
     if (name != null && password != null) {
-      await jupiterPage.type("#text_studid1", name);
-      await jupiterPage.type("#text_password1", password);
-      await jupiterPage.click("#loginbtn");
+      try {
+        await jupiterPage.type("#text_studid1", name);
+        await jupiterPage.type("#text_password1", password);
+        await jupiterPage.click("#loginbtn");
+      } catch (e) {
+        browser.close();
+        Log.logger.e("浏览器关闭", error: e);
+        UI.showNotification("未知异常", type: NotificationType.error);
+        return false;
+      }
     } else {
-      await jupiterPage.type("#text_studid1", SettingManager.settings["jupiterName"]!);
-      await jupiterPage.type("#text_password1", SettingManager.settings["jupiterPassword"]!);
-      await jupiterPage.click("#loginbtn");
+      try {
+        await jupiterPage.type("#text_studid1", SettingManager.settings["jupiterName"]!);
+        await jupiterPage.type("#text_password1", SettingManager.settings["jupiterPassword"]!);
+        await jupiterPage.click("#loginbtn");
+      } catch (e) {
+        browser.close();
+        Log.logger.e("浏览器关闭", error: e);
+        UI.showNotification("未知异常", type: NotificationType.error);
+        return false;
+      }
     }
 
     // 判断是否登录成功
@@ -101,6 +122,7 @@ class AssignmentNotifierBgWorker {
       // 用于特殊调用，直接检查账号是否可用
       if (name != null && password != null) {
         browser.close();
+        Log.logger.i("浏览器关闭");
         return true;
       }
     } catch (_) {
@@ -127,7 +149,11 @@ class AssignmentNotifierBgWorker {
 
   static void checkForNewAssignment({int? retry}) async {
     // 如果传入的 retry 为 0 直接终止
-    if (retry == 0) return;
+    if (retry == 0) {
+      browser.close();
+      Log.logger.i("浏览器关闭");
+      return;
+    }
 
     // 打开自动化浏览器并前往 Jupiter 登录页
     final jupiterPage = await openJupiterPage();
@@ -148,6 +174,7 @@ class AssignmentNotifierBgWorker {
 
     if (courseCount == 0) {
       browser.close();
+      Log.logger.i("浏览器关闭");
       return;
     }
 
@@ -267,6 +294,7 @@ class AssignmentNotifierBgWorker {
       Log.logger.i("浏览器关闭");
       return;
     }
+
     jupiterData.courses = storedCourses;
     isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
     localNotifier.notify(
@@ -302,6 +330,7 @@ class AssignmentNotifierBgWorker {
       // 再次写入数据库
       isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
     }
+
     browser.close();
     Log.logger.i("浏览器关闭");
   }
