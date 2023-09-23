@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:flutter/material.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
 
 import 'package:scannmay_toolkit/model/notification.dart';
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
@@ -13,11 +15,13 @@ class NotificationView extends StatefulWidget {
   const NotificationView({super.key});
 
   @override
-  State<NotificationView> createState() => _NotificationViewState();
+  State<NotificationView> createState() => NotificationViewState();
 }
 
-class _NotificationViewState extends State<NotificationView> {
+class NotificationViewState extends State<NotificationView> {
   final isar = NotificationQueue.isar;
+
+  final lastUpdatedTime = AssignmentNotifierBgWorker.lastUpdateTime;
 
   late JupiterNotification notificationQueue;
   late final StreamSubscription<JupiterNotification?> notificationStreamListener;
@@ -68,6 +72,8 @@ class _NotificationViewState extends State<NotificationView> {
                 onPressed: () => Utils.openUrl("https://login.jupitered.com/login/"),
                 child: const Text("前往 Jupiter Ed"),
               ),
+              const SizedBox(width: 24),
+              Obx(() => Text("上次数据更新于: $lastUpdatedTime")),
               const Expanded(child: SizedBox()),
               ElevatedButton(
                 onPressed: clearNotificationQueue,

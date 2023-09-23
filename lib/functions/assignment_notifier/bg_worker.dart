@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:puppeteer/puppeteer.dart';
 import 'package:local_notifier/local_notifier.dart';
@@ -19,6 +20,8 @@ class AssignmentNotifierBgWorker {
   static late final Isar isar;
 
   static late Timer bgWorker;
+
+  static var lastUpdateTime = "数据检索中...".obs;
 
   static late Browser browser;
 
@@ -50,7 +53,7 @@ class AssignmentNotifierBgWorker {
     try {
       browser = await puppeteer.launch(
         headless: Utils.ifProduction() ? true : false,
-        defaultViewport: const DeviceViewport(height: 1920, width: 1080),
+        defaultViewport: null,
       );
       jupiterPage = await browser.newPage();
       Log.logger.i("浏览器启动");
@@ -183,6 +186,7 @@ class AssignmentNotifierBgWorker {
 
     if (courseCount == 0) {
       browser.close();
+      lastUpdateTime.value = Utils.formatTime(DateTime.now());
       Log.logger.i("浏览器关闭");
       return;
     }
@@ -300,12 +304,14 @@ class AssignmentNotifierBgWorker {
     // 如无修改就不再写入数据库，反之写入
     if (modification == 0) {
       browser.close();
+      lastUpdateTime.value = Utils.formatTime(DateTime.now());
       Log.logger.i("浏览器关闭");
       return;
     }
 
     jupiterData.courses = storedCourses;
     isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
+    lastUpdateTime.value = Utils.formatTime(DateTime.now());
     localNotifier.notify(
       LocalNotification(
         title: "共有 ${modifiedCourses.length} 门科目有新作业 | 成绩",
