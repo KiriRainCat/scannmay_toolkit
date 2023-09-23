@@ -293,7 +293,7 @@ class AssignmentNotifierBgWorker {
       Log.logger.e("浏览器关闭", error: e);
       UI.showNotification("Chromium 自动化浏览器出现上下文异常，将进行重试: $e", type: NotificationType.error);
       browser.close();
-      checkForNewAssignment(retry: retry == null ? 2 : --retry);
+      checkForNewAssignment(retry: retry == null ? 3 : --retry);
       return;
     }
 
