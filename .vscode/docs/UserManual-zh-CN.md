@@ -4,6 +4,8 @@
 
 - **Ver. ** 0.0.1
 
+- **Develop Time: ** [![wakatime](https://wakatime.com/badge/user/c4514f01-2455-4665-8c86-194659ba07a6/project/15e59aa4-0616-4bc6-90ab-af449e54d03f.svg)](https://wakatime.com/badge/user/c4514f01-2455-4665-8c86-194659ba07a6/project/15e59aa4-0616-4bc6-90ab-af449e54d03f)
+
 [TOC]
 
 ### 初次启动
