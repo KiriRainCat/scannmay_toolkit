@@ -41,7 +41,7 @@ class AuthManager {
     return true;
   }
 
-  static void logout() async {
+  static void logout({bool needEnsureLogging = true}) async {
     late final Response res;
     try {
       res = await dio.post("/auth/logout", queryParameters: {"token": SettingManager.settings["loginToken"]});
@@ -57,7 +57,7 @@ class AuthManager {
     UI.showNotification(res.data["msg"]);
     await SettingManager.loginToken();
     AssignmentNotifierBgWorker.forceStop();
-    ensureLoggedIn();
+    if (needEnsureLogging) ensureLoggedIn();
   }
 }
 

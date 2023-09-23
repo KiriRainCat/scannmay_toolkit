@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:scannmay_toolkit/main.dart';
+import 'package:scannmay_toolkit/functions/auth_manager.dart';
 import 'package:scannmay_toolkit/components/unordered_list_item.dart';
 import 'package:scannmay_toolkit/functions/auto_updater/auto_updater.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
@@ -28,6 +29,8 @@ class _UpdateNoticeDialogState extends State<UpdateNoticeDialog> {
       NotificationQueue.clear();
       AssignmentNotifierBgWorker.clear();
     }
+    if (widget.logs.remove("Logout")) AuthManager.logout(needEnsureLogging: false);
+
     super.initState();
   }
 
