@@ -1,4 +1,4 @@
-## Scannmay Toolkit  用户手册
+## Scannmay Toolkit 用户手册
 
 - **Language: ** 简体中文
 
@@ -19,20 +19,14 @@
 - ![jupiter-login-zh-CN](assets/jupiter-login-zh-CN.png)
 - 之后会询问 Jupiter 账号
 - 初次启动软件可能在此处会出现进度条转很久的情况，请耐心等待，是在下载必须的依赖资源
-- SID 为学生id 比如说 1279
+- SID 为学生 id 比如说 1279
 - **全部完成后就可以正常使用啦~**
 
 - 第一次启动消息队列出现大量新作业为正常情况，可以直接清空队列
 
-
-
 ### 界面概览
 
 - ![ui-overview-zh-CN](assets/ui-overview-zh-CN.png)
-
-
-
-
 
 ### 作业通知队列页
 
@@ -41,15 +35,11 @@
 - 展开详情后界面大概长这样
 - ![homework-info](assets/homework-info.png)
 
-
-
-
-
 ### 常见问题
 
 #### 为什么第一次登录 Jupiter 账号时按钮进度条一直在转圈？
 
-- **A:** 电脑上可能没有Chromium浏览器，需要自动补齐必要的依赖文件
+- **A:** 电脑上可能没有 Chromium 浏览器，需要自动补齐必要的依赖文件
 
 #### 我的 Jupiter 账号信息会不会被上传至远端服务器？
 
