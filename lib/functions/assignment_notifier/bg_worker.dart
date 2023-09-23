@@ -50,7 +50,7 @@ class AssignmentNotifierBgWorker {
     try {
       browser = await puppeteer.launch(
         headless: Utils.ifProduction() ? true : false,
-        defaultViewport: null,
+        defaultViewport: const DeviceViewport(height: 1920, width: 1080),
       );
       jupiterPage = await browser.newPage();
       Log.logger.i("浏览器启动");
@@ -62,14 +62,23 @@ class AssignmentNotifierBgWorker {
     }
 
     // 前往 Jupiter 登录页
-    try {
-      await jupiterPage.goto("https://login.jupitered.com/login/", wait: Until.networkIdle);
-      await jupiterPage.waitForSelector("#text_school1");
-    } catch (e) {
-      browser.close();
-      Log.logger.e("浏览器关闭", error: e);
-      UI.showNotification("网络错误，无法打开 Jupiter: $e", type: NotificationType.error);
-      return null;
+    var timesOfErr = 0;
+    for (var i = 0; i < 4; i++) {
+      try {
+        await jupiterPage.goto("https://login.jupitered.com/login/", wait: Until.networkIdle);
+        await jupiterPage.waitForSelector("#text_school1");
+        await Future.delayed(Constants.universalDelay);
+        break;
+      } catch (e) {
+        if (timesOfErr > 3) {
+          browser.close();
+          Log.logger.e("浏览器关闭", error: e);
+          UI.showNotification("网络错误，无法打开 Jupiter: $e", type: NotificationType.error);
+        }
+        timesOfErr++;
+        await Future.delayed(Constants.universalDelay);
+        continue;
+      }
     }
 
     return jupiterPage;
