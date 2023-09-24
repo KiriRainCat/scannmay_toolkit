@@ -393,11 +393,8 @@ class AssignmentNotifierBgWorker {
           "node => node.innerText",
         );
       } catch (_) {
-        jupiterPage.click("div[script*='grades']");
-        continue;
+        desc = "None";
       }
-
-      if (desc.isEmpty) desc = "None";
 
       // 更新数据 + 返回 Assignments 页面
       course.assignments!.firstWhere((item) => item.title == assignments[i].title).desc = desc;
