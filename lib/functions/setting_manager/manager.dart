@@ -59,6 +59,7 @@ class SettingManager {
     }
 
     // 写入数据库
+    settings["launchOnStartup"] = flag.toString();
     final setting = await isar.settings.filter().nameEqualTo("launchOnStartup").findFirst();
     isar.writeTxn(() => isar.settings.put(setting!..value = flag.toString()));
   }
