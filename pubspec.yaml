@@ -1,7 +1,7 @@
 name: scannmay_toolkit
 description: A toolkit for students created by KiriRainCat with multiple small functions
 publish_to: "none"
-version: 0.0.1-alpha
+version: 0.0.2-alpha
 
 environment:
   sdk: ">=3.1.0-262.2.beta <4.0.0"
