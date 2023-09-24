@@ -7,6 +7,7 @@ class RoundedButton extends StatelessWidget {
   final Widget buttonContent;
   final EdgeInsetsGeometry? margin;
   final Color? bgColor;
+  final String? tooltip;
 
   const RoundedButton({
     super.key,
@@ -16,6 +17,7 @@ class RoundedButton extends StatelessWidget {
     required this.buttonContent,
     this.margin,
     this.bgColor,
+    this.tooltip,
   });
 
   @override
@@ -28,10 +30,18 @@ class RoundedButton extends StatelessWidget {
         shape: BoxShape.circle,
         color: bgColor,
       ),
-      child: InkWell(
-        onTap: onPressed,
-        child: buttonContent,
-      ),
+      child: tooltip == null
+          ? InkWell(
+              onTap: onPressed,
+              child: buttonContent,
+            )
+          : Tooltip(
+              message: tooltip,
+              child: InkWell(
+                onTap: onPressed,
+                child: buttonContent,
+              ),
+            ),
     );
   }
 }
