@@ -26,9 +26,6 @@ class AssignmentNotifierBgWorker {
   static late Browser browser;
 
   static void initAndStart(String dataFetchInterval, {Isar? db, bool? immediate}) {
-    // 如果没有账号
-    if (SettingManager.settings["jupiterName"] == null || SettingManager.settings["jupiterPassword"] == null) {}
-
     if (db != null) isar = db;
     if (immediate ??= false) checkForNewAssignment();
     bgWorker = Timer.periodic(Duration(minutes: int.parse(dataFetchInterval)), (_) => checkForNewAssignment());
