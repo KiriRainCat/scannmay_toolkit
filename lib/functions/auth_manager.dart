@@ -105,7 +105,7 @@ class _UserAuthDialogState extends State<UserAuthDialog> {
         ElevatedButton(
           onPressed: loading ? null : () => login(() => Navigator.of(context).pop()),
           child: loading
-              ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(value: null))
+              ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator())
               : const Text("登录", style: TextStyle(color: Colors.blue)),
         ),
       ],

@@ -64,7 +64,7 @@ class _JupiterAccountQueryDialogState extends State<JupiterAccountQueryDialog> {
         ElevatedButton(
           onPressed: loading ? null : () => saveAccount(() => Navigator.of(context).pop()),
           child: loading
-              ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(value: null))
+              ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator())
               : const Text("确认", style: TextStyle(color: Colors.blue)),
         ),
       ],
