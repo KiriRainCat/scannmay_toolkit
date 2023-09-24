@@ -213,6 +213,15 @@ class AssignmentNotifierBgWorker {
         await jupiterPage.waitForSelector("div[class='hide null']");
         await Future.delayed(Constants.universalDelay);
 
+        // 检索当前科目的总成绩
+        String? courseGrade;
+        try {
+          courseGrade = await jupiterPage.$eval(
+            "#mainpage > div.printmargin > div.shrink > div:nth-child(4) > table > tbody > tr.baseline.botline.printblue",
+            "el => el.cells[2].innerText + '  ' + el.cells[1].innerText",
+          );
+        } catch (_) {}
+
         // 检索 HTML 中的作业数据
         List assignments = await jupiterPage.$$eval(
           "table > tbody[click*='goassign'] > tr:nth-child(2)",
@@ -245,7 +254,8 @@ class AssignmentNotifierBgWorker {
           storedCourses.add(
             Course()
               ..name = courseName
-              ..assignments = assignments.cast(),
+              ..assignments = assignments.cast()
+              ..grade = courseGrade,
           );
           await NotificationQueue.push(
             Message()
@@ -257,6 +267,12 @@ class AssignmentNotifierBgWorker {
           modifiedCourses.add(courseName);
           modification++;
           continue;
+        }
+
+        // 比较科目成绩，不同的话修改并需要写入
+        if (course.grade != courseGrade) {
+          course.grade = courseGrade;
+          modification++;
         }
 
         // 比较数据库中的与新查询到的作业数据，差值，如无差值就跳过
@@ -314,7 +330,7 @@ class AssignmentNotifierBgWorker {
     lastUpdateTime.value = Utils.formatTime(DateTime.now());
     localNotifier.notify(
       LocalNotification(
-        title: "共有 ${modifiedCourses.length} 门科目有新作业 | 成绩",
+        title: modifiedCourses.isEmpty ? "$modification 门科目的整体成绩有变动" : "共有 ${modifiedCourses.length} 门科目有新作业 | 成绩",
         body: modifiedCourses.length > 4 ? modifiedCourses.join(", ") : modifiedCourses.join("\n"),
       ),
     );

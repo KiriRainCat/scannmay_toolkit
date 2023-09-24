@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:scannmay_toolkit/main.dart';
+import 'package:scannmay_toolkit/views/course_view/course_view.dart';
 import 'package:scannmay_toolkit/views/home_view.dart';
 import 'package:scannmay_toolkit/views/about_view.dart';
 import 'package:scannmay_toolkit/views/notification_view/notification_view.dart';
@@ -13,6 +14,10 @@ final destinations = [
   const NavigationRailDestination(
     icon: Icon(Icons.home),
     label: Text("主页", style: textStyle),
+  ),
+  const NavigationRailDestination(
+    icon: Icon(Icons.collections_bookmark),
+    label: Text("科目", style: textStyle),
   ),
   const NavigationRailDestination(
     icon: Icon(Icons.notifications),
@@ -30,6 +35,7 @@ final destinations = [
 
 final destinationViews = [
   const HomeView(),
+  const CourseView(),
   const NotificationView(),
   const SettingView(),
   AboutView(version: version)
