@@ -12,6 +12,7 @@ import 'package:scannmay_toolkit/main.dart';
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
 import 'package:scannmay_toolkit/functions/utils/logger.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
 import 'package:scannmay_toolkit/functions/auto_updater/update_notice_dialog.dart';
 
 class AutoUpdater {
@@ -82,6 +83,7 @@ class AutoUpdater {
 
     // 终止当前应用
     Future.delayed(const Duration(seconds: 5));
+    AssignmentNotifierBgWorker.forceStop();
     await windowManager.destroy();
   }
 }
