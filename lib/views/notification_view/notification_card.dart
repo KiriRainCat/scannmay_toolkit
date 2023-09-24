@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
+
+import 'package:scannmay_toolkit/constants.dart';
+import 'package:scannmay_toolkit/model/jupiter.dart';
+import 'package:scannmay_toolkit/model/notification.dart';
+import 'package:scannmay_toolkit/functions/utils/ui.dart';
+import 'package:scannmay_toolkit/functions/utils/utils.dart';
+import 'package:scannmay_toolkit/functions/utils/logger.dart';
 import 'package:scannmay_toolkit/components/rounded_button.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
-import 'package:scannmay_toolkit/model/jupiter.dart';
-
-import 'package:scannmay_toolkit/model/notification.dart';
-import 'package:scannmay_toolkit/functions/utils/utils.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 
 class NotificationCard extends StatelessWidget {
@@ -25,12 +28,59 @@ class NotificationCard extends StatelessWidget {
     return parts.join("/");
   }
 
+  void fetchAssignmentDesc(String assignmentTitle) async {
+    Get.back();
+    UI.showNotification("请等待数据检索完成的提示信息，期间请不要重复点击检索数据按钮");
+
+    // 打开浏览器并登录 Jupiter
+    final jupiterPage = await AssignmentNotifierBgWorker.openJupiterPage();
+    if (jupiterPage == null) return;
+    if (!(await AssignmentNotifierBgWorker.login(jupiterPage))) return;
+
+    // 前往对应课程页
+    final courses = await AssignmentNotifierBgWorker.getCourses(jupiterPage);
+    late final int idx;
+    for (var i = 0; i < courses.length; i++) {
+      if (await courses[i].evaluate("node => node.innerText") == message.course) {
+        idx = i;
+        break;
+      }
+    }
+
+    try {
+      courses[idx].hover();
+      await Future.delayed(Constants.universalDelay);
+      jupiterPage.mouse.down();
+      jupiterPage.mouse.up();
+      await jupiterPage.waitForSelector("div[class='hide null']");
+      await Future.delayed(Constants.universalDelay);
+    } catch (e) {
+      Log.logger.e("浏览器关闭", error: e);
+      UI.showNotification("Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败: $e", type: NotificationType.error);
+      AssignmentNotifierBgWorker.browser.close();
+      return;
+    }
+
+    // 获取数据库数据
+    final jupiterData = (await AssignmentNotifierBgWorker.isar.jupiterDatas.filter().idEqualTo(0).findFirst())!;
+    final course = jupiterData.courses!.firstWhere((course) => course.name == message.course);
+    final assignments = [Assignment()..title = assignmentTitle];
+
+    // 查询作业详情并写入数据库
+    await AssignmentNotifierBgWorker.getAssignmentDesc(jupiterPage, course, assignments);
+    AssignmentNotifierBgWorker.isar.writeTxn(() => AssignmentNotifierBgWorker.isar.jupiterDatas.put(jupiterData));
+
+    AssignmentNotifierBgWorker.browser.close();
+    Log.logger.i("浏览器关闭");
+    UI.showNotification("$assignmentTitle 的数据检索完成啦，重新打开详情页以查看信息");
+  }
+
   void showAssignmentInfo(Assignment assignment) async {
     final data = await AssignmentNotifierBgWorker.isar.jupiterDatas.filter().idEqualTo(0).findFirst();
     final course = data!.courses!.firstWhere((course) => course.name == message.course);
     var desc = course.assignments!.firstWhere((item) => item.title == assignment.title).desc;
 
-    if (desc == null || desc.isEmpty) desc = "None";
+    desc ??= "Not Fetched";
     desc = desc.replaceFirst(RegExp(r'Directions\n'), "");
     desc = desc.split("\n").join("\n\n");
 
@@ -42,9 +92,17 @@ class NotificationCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 RoundedButton(
+                  onPressed: () => fetchAssignmentDesc(assignment.title!),
+                  tooltip: "${desc == 'Not Fetched' ? '' : '重新'}检索 Directions 信息",
+                  buttonContent: Icon(Icons.replay_outlined, size: 18, color: Colors.blue.shade900),
+                  margin: const EdgeInsets.fromLTRB(0, 8, 10, 0),
+                  width: 20,
+                  height: 20,
+                ),
+                RoundedButton(
                   onPressed: () => Get.back(),
                   buttonContent: Icon(Icons.close, size: 18, color: Colors.red.shade900),
-                  margin: const EdgeInsets.fromLTRB(0, 8, 10, 0),
+                  margin: const EdgeInsets.fromLTRB(0, 8, 16, 0),
                   width: 20,
                   height: 20,
                 ),

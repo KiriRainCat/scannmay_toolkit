@@ -177,7 +177,7 @@ class AssignmentNotifierBgWorker {
     // 获取科目数量
     late final int courseCount;
     try {
-      courseCount = (await _getCourses(jupiterPage)).length;
+      courseCount = (await getCourses(jupiterPage)).length;
       await jupiterPage.click("#touchnavbtn");
     } catch (_) {
       browser.close();
@@ -202,7 +202,7 @@ class AssignmentNotifierBgWorker {
     final Map<int, List<Assignment>> assignmentsAwaitDesc = {};
     try {
       for (var i = 0; i < courseCount; i++) {
-        final courses = await _getCourses(jupiterPage);
+        final courses = await getCourses(jupiterPage);
         final courseName = await courses[i].evaluate("node => node.innerText");
 
         // 转跳到对应 Course 详情页
@@ -322,7 +322,7 @@ class AssignmentNotifierBgWorker {
     // 浏览器关闭前检测是否需要检索作业详情信息
     if (assignmentsAwaitDesc.isNotEmpty && assignmentsAwaitDesc.length < 12) {
       for (var entry in assignmentsAwaitDesc.entries) {
-        final courses = await _getCourses(jupiterPage);
+        final courses = await getCourses(jupiterPage);
         final courseName = await courses[entry.key].evaluate("node => node.innerText");
 
         try {
@@ -339,7 +339,7 @@ class AssignmentNotifierBgWorker {
         }
 
         final course = jupiterData.courses!.firstWhere((course) => (course.name == courseName));
-        await _getAssignmentDesc(jupiterPage, course, entry.value);
+        await getAssignmentDesc(jupiterPage, course, entry.value);
       }
 
       // 再次写入数据库
@@ -350,7 +350,7 @@ class AssignmentNotifierBgWorker {
     Log.logger.i("浏览器关闭");
   }
 
-  static Future<void> _getAssignmentDesc(Page jupiterPage, Course course, List<Assignment> assignments) async {
+  static Future<void> getAssignmentDesc(Page jupiterPage, Course course, List<Assignment> assignments) async {
     var timesOfErr = 0;
 
     for (var i = 0; i < assignments.length; i++) {
@@ -386,7 +386,7 @@ class AssignmentNotifierBgWorker {
         i--;
       }
 
-      late final String desc;
+      late String desc;
       try {
         desc = await jupiterPage.$eval(
           "div[style='padding:0px 20px; max-width:472px;']",
@@ -397,13 +397,15 @@ class AssignmentNotifierBgWorker {
         continue;
       }
 
+      if (desc.isEmpty) desc = "None";
+
       // 更新数据 + 返回 Assignments 页面
       course.assignments!.firstWhere((item) => item.title == assignments[i].title).desc = desc;
       jupiterPage.click("div[script*='grades']");
     }
   }
 
-  static Future<List<ElementHandle>> _getCourses(Page jupiterPage) async {
+  static Future<List<ElementHandle>> getCourses(Page jupiterPage) async {
     await jupiterPage.waitForSelector("div[class='hide null']");
     await jupiterPage.click("#touchnavbtn");
     await Future.delayed(Constants.universalDelay);
