@@ -30,7 +30,7 @@ class _CourseViewState extends State<CourseView> {
                 onPressed: () => Utils.openUrl("https://login.jupitered.com/login/"),
                 child: const Text("前往 Jupiter Ed"),
               ),
-              const SizedBox(width: 24),
+              const SizedBox(width: 16),
               Obx(() => Text("上次数据更新于: $lastUpdatedTime")),
             ],
           ),
