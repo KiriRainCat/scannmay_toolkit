@@ -25,7 +25,7 @@ class UI {
       backgroundColor: Colors.white70,
       margin: const EdgeInsets.only(top: 6),
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
-      duration: const Duration(milliseconds: 1800),
+      duration: const Duration(milliseconds: 2600),
       animationDuration: const Duration(milliseconds: 500),
       maxWidth: 360,
       titleText: const SizedBox(height: 0),
