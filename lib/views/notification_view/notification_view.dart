@@ -59,6 +59,19 @@ class NotificationViewState extends State<NotificationView> {
     if (result) NotificationQueue.clear();
   }
 
+  void checkForAssignments() async {
+    // 判断是否有浏览器正在进行数据检索，有的话不开始新的检索进程
+    try {
+      if (AssignmentNotifierBgWorker.browser.isConnected) {
+        UI.showNotification("已有浏览器正在检索数据");
+        return;
+      }
+    } catch (_) {}
+
+    UI.showNotification("数据检索已开始，请耐心等待");
+    AssignmentNotifierBgWorker.checkForNewAssignment();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -70,11 +83,16 @@ class NotificationViewState extends State<NotificationView> {
             children: [
               ElevatedButton(
                 onPressed: () => Utils.openUrl("https://login.jupitered.com/login/"),
-                child: const Text("前往 Jupiter Ed"),
+                child: const Text("前往 Jupiter ED"),
               ),
-              const SizedBox(width: 24),
+              const SizedBox(width: 16),
               Obx(() => Text("上次数据更新于: $lastUpdatedTime")),
               const Expanded(child: SizedBox()),
+              ElevatedButton(
+                onPressed: checkForAssignments,
+                child: const Text("强制检索数据"),
+              ),
+              const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: clearNotificationQueue,
                 child: const Text("清空队列", style: TextStyle(color: Colors.red)),
