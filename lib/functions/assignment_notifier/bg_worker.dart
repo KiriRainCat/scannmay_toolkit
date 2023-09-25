@@ -45,6 +45,25 @@ class AssignmentNotifierBgWorker {
   }
 
   static Future<Page?> openJupiterPage() async {
+    // 如果浏览器对象已经存在，等待最长 120s
+    var secondsWaited = 0;
+    for (var i = 0; i < 120; i++) {
+      secondsWaited++;
+      try {
+        if (browser.isConnected) {
+          await Future.delayed(const Duration(seconds: 1));
+          continue;
+        }
+        break;
+      } catch (_) {
+        break;
+      }
+    }
+    if (secondsWaited > 119) {
+      Log.logger.e("浏览器启动失败", error: "等待 60s 后上一个浏览器对象仍然存在");
+      return null;
+    }
+
     // 创建浏览器对象，根据环境决定是否使用无头模式
     late final Page jupiterPage;
     try {
