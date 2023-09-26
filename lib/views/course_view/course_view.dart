@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
+import 'package:flutter/material.dart';
 
-import 'package:scannmay_toolkit/functions/utils/utils.dart';
 import 'package:scannmay_toolkit/model/jupiter.dart';
+import 'package:scannmay_toolkit/functions/utils/utils.dart';
+import 'package:scannmay_toolkit/views/course_view/course_card.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
 
 class CourseView extends StatefulWidget {
   const CourseView({super.key});
@@ -40,28 +41,7 @@ class _CourseViewState extends State<CourseView> {
               child: Column(
                 children: [
                   for (var course in courses) ...[
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Theme.of(context).colorScheme.surface,
-                        boxShadow: [
-                          BoxShadow(
-                            spreadRadius: 0.25,
-                            blurRadius: 6,
-                            color: Colors.black.withAlpha(15),
-                          ),
-                        ],
-                      ),
-                      child: Flex(
-                        direction: Axis.horizontal,
-                        children: [
-                          Text(course.name!),
-                          const Expanded(child: SizedBox()),
-                          Text(course.grade ?? "None"),
-                        ],
-                      ),
-                    ),
+                    CourseCard(course: course),
                     const SizedBox(height: 12),
                   ]
                 ],
