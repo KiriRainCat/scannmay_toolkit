@@ -126,7 +126,7 @@ class NotificationCard extends StatelessWidget {
                       Text("Score: [ ${assignment.score} ]"),
                       const SizedBox(height: 16),
                       const Text("Directions: ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text(desc),
+                      SelectionArea(child: Text(desc)),
                     ],
                   ),
                 ),
