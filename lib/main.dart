@@ -192,7 +192,8 @@ void _showWindow() async {
   windowManager.focus();
 }
 
-void _disposeAndDestroy() {
+void _disposeAndDestroy() async {
   AssignmentNotifierBgWorker.forceStop();
+  await Future.delayed(const Duration(seconds: 2));
   windowManager.destroy();
 }
