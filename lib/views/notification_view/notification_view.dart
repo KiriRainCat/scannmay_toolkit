@@ -83,7 +83,7 @@ class NotificationViewState extends State<NotificationView> {
             children: [
               ElevatedButton(
                 onPressed: () => Utils.openUrl("https://login.jupitered.com/login/"),
-                child: const Text("前往 Jupiter ED"),
+                child: const Text("前往 Jupiter"),
               ),
               const SizedBox(width: 16),
               Obx(() => Text("上次数据更新于: $lastUpdatedTime")),
