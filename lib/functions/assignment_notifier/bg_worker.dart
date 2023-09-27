@@ -26,8 +26,8 @@ class AssignmentNotifierBgWorker {
   static late Browser browser;
 
   static void initAndStart(String dataFetchInterval, {Isar? db, bool? immediate}) async {
-    await Future.delayed(Constants.universalDelay);
     if (db != null) isar = db;
+    await Future.delayed(Constants.universalDelay);
     if (immediate ??= false) checkForNewAssignment();
     bgWorker = Timer.periodic(Duration(minutes: int.parse(dataFetchInterval)), (_) => checkForNewAssignment());
   }
