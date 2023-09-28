@@ -61,7 +61,7 @@ class AssignmentNotifierBgWorker {
       }
     }
     if (secondsWaited > 119) {
-      Log.logger.e("浏览器启动失败", error: "等待 60s 后上一个浏览器对象仍然存在");
+      Log.logger.e("浏览器启动失败", error: "等待 120s 后上一个浏览器对象仍然存在");
       return null;
     }
 
