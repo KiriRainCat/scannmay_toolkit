@@ -186,10 +186,13 @@ Future<void> _initAndRunApp(List<String> args) async {
 }
 
 void _showWindow() async {
-  try {
-    if (!AssignmentNotifierBgWorker.browser.isConnected) AssignmentNotifierBgWorker.checkForNewAssignment();
-  } catch (_) {
-    AssignmentNotifierBgWorker.checkForNewAssignment();
+  final diff = DateTime.tryParse(AssignmentNotifierBgWorker.lastUpdateTime.value)?.difference(DateTime.now()).inMinutes;
+  if ((diff ?? 999) > 5) {
+    try {
+      if (!AssignmentNotifierBgWorker.browser.isConnected) AssignmentNotifierBgWorker.checkForNewAssignment();
+    } catch (_) {
+      AssignmentNotifierBgWorker.checkForNewAssignment();
+    }
   }
   await windowManager.center();
   windowManager.show();
@@ -197,6 +200,7 @@ void _showWindow() async {
 }
 
 void _disposeAndDestroy() async {
+  windowManager.hide();
   AssignmentNotifierBgWorker.forceStop();
   await Future.delayed(const Duration(seconds: 2));
   windowManager.destroy();
