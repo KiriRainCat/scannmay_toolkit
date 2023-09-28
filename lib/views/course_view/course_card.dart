@@ -144,6 +144,7 @@ class CourseCard extends StatelessWidget {
       await Future.delayed(Constants.universalDelay);
     } catch (e) {
       Log.logger.e("浏览器关闭", error: e);
+      AssignmentNotifierBgWorker.lastUpdateTime.value.replaceAll(RegExp(r" (数据检索中...)"), "数据检索失败");
       UI.showNotification("Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败: $e", type: NotificationType.error);
       AssignmentNotifierBgWorker.browser.close();
       return;

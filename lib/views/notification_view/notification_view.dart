@@ -88,10 +88,6 @@ class NotificationViewState extends State<NotificationView> {
               const SizedBox(width: 16),
               Obx(() => Text("上次数据更新于: $lastUpdatedTime")),
               const Expanded(child: SizedBox()),
-              ElevatedButton(
-                onPressed: checkForAssignments,
-                child: const Text("强制检索数据"),
-              ),
               const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: clearNotificationQueue,

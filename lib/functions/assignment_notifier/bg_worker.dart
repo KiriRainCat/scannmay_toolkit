@@ -1,5 +1,6 @@
 // cSpell: disable
 
+import 'dart:math';
 import 'dart:async';
 
 import 'package:get/get.dart';
@@ -25,10 +26,9 @@ class AssignmentNotifierBgWorker {
 
   static late Browser browser;
 
-  static void initAndStart(String dataFetchInterval, {Isar? db, bool? immediate}) async {
+  static void initAndStart(String dataFetchInterval, {Isar? db}) async {
     if (db != null) isar = db;
     await Future.delayed(Constants.universalDelay);
-    if (immediate ??= false) checkForNewAssignment();
     bgWorker = Timer.periodic(Duration(minutes: int.parse(dataFetchInterval)), (_) => checkForNewAssignment());
   }
 
@@ -46,6 +46,8 @@ class AssignmentNotifierBgWorker {
   }
 
   static Future<Page?> openJupiterPage() async {
+    await Future.delayed(Duration(milliseconds: Random().nextInt(500) + 100));
+
     // 如果浏览器对象已经存在，等待最长 120s
     var secondsWaited = 0;
     for (var i = 0; i < 120; i++) {
@@ -65,6 +67,12 @@ class AssignmentNotifierBgWorker {
       return null;
     }
 
+    if (lastUpdateTime.value.contains("数据检索失败")) {
+      lastUpdateTime.value = lastUpdateTime.value.replaceAll(RegExp(r"数据检索失败"), "数据检索中...");
+    } else if (!lastUpdateTime.value.contains("数据检索中...")) {
+      lastUpdateTime.value += " (数据检索中...)";
+    }
+
     // 创建浏览器对象，根据环境决定是否使用无头模式
     late final Page jupiterPage;
     try {
@@ -77,6 +85,7 @@ class AssignmentNotifierBgWorker {
     } catch (e) {
       browser.close();
       Log.logger.e("浏览器关闭", error: e);
+      lastUpdateTime.value.replaceAll(RegExp(r" (数据检索中...)"), "数据检索失败");
       UI.showNotification("Chromium 自动化浏览器启动异常: $e", type: NotificationType.error);
       return null;
     }
@@ -93,6 +102,7 @@ class AssignmentNotifierBgWorker {
         if (timesOfErr > 3) {
           browser.close();
           Log.logger.e("浏览器关闭", error: e);
+          lastUpdateTime.value.replaceAll(RegExp(r" (数据检索中...)"), "数据检索失败");
           UI.showNotification("网络错误，无法打开 Jupiter: $e", type: NotificationType.error);
         }
         timesOfErr++;
@@ -115,6 +125,7 @@ class AssignmentNotifierBgWorker {
     } catch (e) {
       browser.close();
       Log.logger.e("浏览器关闭", error: e);
+      lastUpdateTime.value = lastUpdateTime.value.replaceAll(RegExp(r"数据检索中..."), "数据检索失败");
       UI.showNotification("登录 Jupiter 时发生未知异常", type: NotificationType.error);
       return false;
     }
@@ -128,6 +139,7 @@ class AssignmentNotifierBgWorker {
       } catch (e) {
         browser.close();
         Log.logger.e("浏览器关闭", error: e);
+        lastUpdateTime.value = lastUpdateTime.value.replaceAll(RegExp(r"数据检索中..."), "数据检索失败");
         UI.showNotification("未知异常", type: NotificationType.error);
         return false;
       }
@@ -139,6 +151,7 @@ class AssignmentNotifierBgWorker {
       } catch (e) {
         browser.close();
         Log.logger.e("浏览器关闭", error: e);
+        lastUpdateTime.value = lastUpdateTime.value.replaceAll(RegExp(r"数据检索中..."), "数据检索失败");
         UI.showNotification("未知异常", type: NotificationType.error);
         return false;
       }
@@ -156,6 +169,7 @@ class AssignmentNotifierBgWorker {
       }
     } catch (_) {
       browser.close();
+      lastUpdateTime.value = lastUpdateTime.value.replaceAll(RegExp(r"数据检索中..."), "数据检索失败");
       Log.logger.e("浏览器关闭", error: "Jupiter 账号或密码错误");
       UI.showNotification("Jupiter 账号或密码错误", type: NotificationType.error);
       return false;
@@ -169,6 +183,7 @@ class AssignmentNotifierBgWorker {
       await jupiterPage.click("#schoolyearlist > div:nth-child(1)");
     } catch (e) {
       Log.logger.e("浏览器关闭", error: e);
+      lastUpdateTime.value = lastUpdateTime.value.replaceAll(RegExp(r"数据检索中..."), "数据检索失败");
       UI.showNotification("学年列表出现异常，无法正常选择最新学年", type: NotificationType.error);
       return false;
     }
@@ -328,6 +343,7 @@ class AssignmentNotifierBgWorker {
       }
     } catch (e) {
       Log.logger.e("浏览器关闭", error: e);
+      lastUpdateTime.value = lastUpdateTime.value.replaceAll(RegExp(r"数据检索中..."), "数据检索失败");
       UI.showNotification("Chromium 自动化浏览器出现上下文异常，将进行重试: $e", type: NotificationType.error);
       browser.close();
       checkForNewAssignment(retry: retry == null ? 3 : --retry);
@@ -367,6 +383,7 @@ class AssignmentNotifierBgWorker {
           await Future.delayed(Constants.universalDelay);
         } catch (e) {
           Log.logger.e("浏览器关闭", error: e);
+          lastUpdateTime.value = lastUpdateTime.value.replaceAll(RegExp(r"数据检索中..."), "数据检索失败");
           UI.showNotification("Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败: $e", type: NotificationType.error);
           browser.close();
         }
@@ -411,6 +428,7 @@ class AssignmentNotifierBgWorker {
         if (timesOfErr > 3) {
           browser.close();
           Log.logger.e("浏览器关闭", error: e);
+          lastUpdateTime.value = lastUpdateTime.value.replaceAll(RegExp(r"数据检索中..."), "数据检索失败");
           UI.showNotification("Chromium 自动化浏览器出现多次上下文异常，作业详情信息获取失败: $e", type: NotificationType.error);
           timesOfErr = 0;
           continue;

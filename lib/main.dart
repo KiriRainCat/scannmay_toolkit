@@ -42,7 +42,6 @@ void main(List<String> args) async {
   // 启动 Jupiter 数据定时获取进程
   AssignmentNotifierBgWorker.initAndStart(
     db: isar,
-    immediate: true,
     SettingManager.settings["jupiterDataFetchInterval"]!,
   );
 
@@ -188,6 +187,11 @@ Future<void> _initAndRunApp(List<String> args) async {
 }
 
 void _showWindow() async {
+  try {
+    if (!AssignmentNotifierBgWorker.browser.isConnected) AssignmentNotifierBgWorker.checkForNewAssignment();
+  } catch (_) {
+    AssignmentNotifierBgWorker.checkForNewAssignment();
+  }
   await windowManager.center();
   windowManager.show();
   windowManager.focus();
