@@ -169,18 +169,20 @@ Future<void> _initAndRunApp(List<String> args) async {
     },
   );
 
+  // 运行应用
+  runApp(const MainApp());
+
   // 开机启动不显示窗口，显示系统消息，反之显示窗口
   if (args.contains("-startup")) {
-    await Future.delayed(const Duration(seconds: 30));
-    runApp(const MainApp());
     final notification = LocalNotification(
       title: "软件已启动并隐藏至系统托盘",
       actions: [LocalNotificationAction(text: "显示窗口")],
     );
     notification.onClickAction = (index) => _showWindow();
     notification.show();
+    // TODO: 很奇怪的修复开机自启 bug 的方式，记得排查排查
+    Future.delayed(const Duration(seconds: 16), () => AssignmentNotifierBgWorker.checkForNewAssignment());
   } else {
-    runApp(const MainApp());
     _showWindow();
   }
 }
