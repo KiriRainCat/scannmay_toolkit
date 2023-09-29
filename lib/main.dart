@@ -104,7 +104,7 @@ Future<void> _initAndRunApp(List<String> args) async {
   // 单例模式判断
   await WindowsSingleInstance.ensureSingleInstance(
     args,
-    "desktop_open",
+    "scannmay_toolkit",
     onSecondWindow: (args) async {
       if (await windowManager.isMinimized()) await windowManager.restore();
       _showWindow();
