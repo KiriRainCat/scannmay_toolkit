@@ -188,8 +188,9 @@ Future<void> _initAndRunApp(List<String> args) async {
 }
 
 void _showWindow() async {
-  final diff = DateTime.tryParse(AssignmentNotifierBgWorker.lastUpdateTime.value)?.difference(DateTime.now()).inMinutes;
-  if ((diff ?? 999) > 5) {
+  final lastUpdateTime = DateTime.tryParse(AssignmentNotifierBgWorker.lastUpdateTime.value);
+  final diff = DateTime.now().difference(lastUpdateTime ?? DateTime(2023)).inMinutes;
+  if (diff > 5) {
     try {
       if (!AssignmentNotifierBgWorker.browser.isConnected) AssignmentNotifierBgWorker.checkForNewAssignment();
     } catch (_) {
