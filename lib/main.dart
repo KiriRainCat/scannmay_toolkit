@@ -181,7 +181,10 @@ Future<void> _initAndRunApp(List<String> args) async {
     notification.onClickAction = (index) => _showWindow();
     notification.show();
     // TODO: 很奇怪的修复开机自启 bug 的方式，记得排查排查
-    Future.delayed(const Duration(seconds: 16), () => AssignmentNotifierBgWorker.checkForNewAssignment());
+    Future.delayed(const Duration(seconds: 32), () {
+      AssignmentNotifierBgWorker.checkForNewAssignment();
+      Future.delayed(const Duration(seconds: 64), () => AssignmentNotifierBgWorker.checkForNewAssignment());
+    });
   } else {
     _showWindow();
   }
