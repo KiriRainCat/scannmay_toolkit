@@ -1,0 +1,22 @@
+import 'package:flutter/material.dart';
+
+class ScheduleView extends StatefulWidget {
+  const ScheduleView({super.key});
+
+  @override
+  State<ScheduleView> createState() => _ScheduleViewState();
+}
+
+class _ScheduleViewState extends State<ScheduleView> {
+  var selectedDate = DateTime.now();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+      child: const Column(
+        children: [Text("作业日程表页面仍在开发中，敬请期待~ (开发者爆肝 ing)")],
+      ),
+    );
+  }
+}
