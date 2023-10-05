@@ -84,6 +84,7 @@ class AutoUpdater {
     // 终止当前应用
     Future.delayed(const Duration(seconds: 5));
     AssignmentNotifierBgWorker.forceStop();
+    await Future.delayed(const Duration(seconds: 2));
     await windowManager.destroy();
   }
 }
