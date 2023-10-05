@@ -175,7 +175,7 @@ Future<void> _initAndRunApp(List<String> args) async {
   // 开机启动不显示窗口，显示系统消息，反之显示窗口
   if (args.contains("-startup")) {
     final notification = LocalNotification(
-      title: "软件已启动并隐藏至系统托盘",
+      title: "软件已启动并隐藏至系统托盘，如果出现数据不检索的情况，请重启应用，开发者仍然找不到修复的方式",
       actions: [LocalNotificationAction(text: "显示窗口")],
     );
     notification.onClickAction = (index) => _showWindow();
