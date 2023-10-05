@@ -193,7 +193,7 @@ Future<void> _initAndRunApp(List<String> args) async {
 void _showWindow() async {
   final lastUpdateTime = DateTime.tryParse(AssignmentNotifierBgWorker.lastUpdateTime.value);
   final diff = DateTime.now().difference(lastUpdateTime ?? DateTime(2023)).inMinutes;
-  if (diff > 5) {
+  if (diff > 16) {
     try {
       if (!AssignmentNotifierBgWorker.browser.isConnected) AssignmentNotifierBgWorker.checkForNewAssignment();
     } catch (_) {
