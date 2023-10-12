@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:win32_registry/win32_registry.dart';
 
@@ -106,6 +108,31 @@ class SettingManager {
 
     settings["loginToken"] = token;
     isar.writeTxn(() => isar.settings.put(loginTokenSetting!));
+  }
+
+  static Future<void> cfCookieStr() async {
+    final controller = TextEditingController(text: settings["cfCookieStr"]);
+    await Get.dialog<String?>(
+      AlertDialog(
+        title: const Text("Cloudflare Bypass Cookies"),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(hintText: "Cookies 字符串", prefixIcon: Icon(Icons.cookie)),
+        ),
+      ),
+    );
+
+    if (controller.text.isEmpty || controller.text == settings["cfCookieStr"]) {
+      UI.showNotification("字符串不得为空或与旧值相同", type: NotificationType.error);
+      return;
+    }
+    controller.text = controller.text.replaceAll(RegExp("\n"), "");
+
+    // 空捕捉，并写入数据库
+    settings["cfCookieStr"] = controller.text;
+    final setting = await isar.settings.filter().nameEqualTo("cfCookieStr").findFirst() ?? Setting()
+      ..name = "cfCookieStr";
+    isar.writeTxn(() => isar.settings.put(setting..value = controller.text));
   }
 
   //* ------------------------------- 需要保存生效的设置 ------------------------------ *//

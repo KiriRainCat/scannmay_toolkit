@@ -70,6 +70,14 @@ class _SettingViewState extends State<SettingView> {
                     child: const Text("更改账号"),
                   ),
                 ),
+                SettingField(
+                  property: "Cloudflare Bypass Cookies",
+                  desc: "用于绕过 Jupiter Cloudflare 反爬机制的 Cookies (请求 header 中的整段 Cookies 字符串)",
+                  field: ElevatedButton(
+                    onPressed: () => SettingManager.cfCookieStr(),
+                    child: const Text("更改"),
+                  ),
+                ),
               ],
             ),
           ),

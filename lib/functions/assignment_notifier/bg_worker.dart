@@ -3,7 +3,6 @@
 import 'dart:math';
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:puppeteer/puppeteer.dart';
@@ -86,28 +85,18 @@ class AssignmentNotifierBgWorker {
       //* --------------------------------- 绕过反爬 --------------------------------- *//
       await jupiterPage.setUserAgent(Constants.userAgent);
 
-      // 打开拦截请求
-      await jupiterPage.setRequestInterception(true);
+      await jupiterPage.evaluateOnNewDocument(
+          "const newProto = navigator.__proto__;delete newProto.webdriver;navigator.__proto__ = newProto;");
 
-      // 这里的作用是在所有 js 执行前都插入我们的 js 代码抹掉 puppeteer 的特征
-      jupiterPage.onRequest.listen((req) async {
-        // 非 js 脚本返回
-        // 如果 html 中有 inline 的 script 检测 html 中也要改，一般没有
-        if (req.resourceType.toString() != "script") {
-          req.continueRequest();
-          return;
+      // Cookie 绕过 Cloudflare 反爬
+      final cookies = <CookieParam>[];
+      for (var cookie in SettingManager.settings["cfCookieStr"]?.split("; ") ?? []) {
+        if (cookie.contains("cf")) {
+          cookies.add(CookieParam(name: cookie.split("=")[0], value: cookie.split("=")[1], domain: ".jupitered.com"));
         }
-
-        // 获取 url
-        final url = req.url;
-        // 获取 js 文件
-        final res = await Dio().get(url);
-        // 删掉 navigator.webdriver
-        // 这里不排除有其它特征检测，每个网站需要定制化修改
-        final newRes = "navigator.webdriver && delete Navigator.prototype.webdriver;${res.data}";
-        // 返回删掉了 webdriver 的 js
-        await req.respond(body: newRes);
-      });
+      }
+      await Future.delayed(Constants.universalDelay);
+      await jupiterPage.setCookies(cookies);
 
       Log.logger.i("浏览器启动");
     } catch (e) {
@@ -131,7 +120,7 @@ class AssignmentNotifierBgWorker {
           browser.close();
           Log.logger.e("浏览器关闭", error: e);
           lastUpdateTime.value.replaceAll(RegExp(r" (数据检索中...)"), "数据检索失败");
-          UI.showNotification("网络错误，无法打开 Jupiter: $e", type: NotificationType.error);
+          UI.showNotification("网络错误 或 请求被拦截(请修改设置中的 Cloudflare Bypass Cookies): $e", type: NotificationType.error);
         }
         timesOfErr++;
         await Future.delayed(Constants.universalDelay);
