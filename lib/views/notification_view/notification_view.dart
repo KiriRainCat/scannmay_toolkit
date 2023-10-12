@@ -1,13 +1,12 @@
 import 'dart:async';
 
-import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:flutter/material.dart';
-import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
 
 import 'package:scannmay_toolkit/model/notification.dart';
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
-import 'package:scannmay_toolkit/functions/utils/utils.dart';
+import 'package:scannmay_toolkit/components/jupiter_data_status_bar.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
 import 'package:scannmay_toolkit/views/notification_view/notification_card.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 
@@ -20,8 +19,6 @@ class NotificationView extends StatefulWidget {
 
 class NotificationViewState extends State<NotificationView> {
   final isar = NotificationQueue.isar;
-
-  final lastUpdatedTime = AssignmentNotifierBgWorker.lastUpdateTime;
 
   late JupiterNotification notificationQueue;
   late final StreamSubscription<JupiterNotification?> notificationStreamListener;
@@ -78,15 +75,8 @@ class NotificationViewState extends State<NotificationView> {
       margin: const EdgeInsets.fromLTRB(24, 8, 24, 24),
       child: Column(
         children: [
-          Flex(
-            direction: Axis.horizontal,
-            children: [
-              ElevatedButton(
-                onPressed: () => Utils.openUrl("https://login.jupitered.com/login/"),
-                child: const Text("前往 Jupiter"),
-              ),
-              const SizedBox(width: 16),
-              Obx(() => Text("上次数据更新于: $lastUpdatedTime")),
+          JupiterDataStatusBar(
+            additionalWidgets: [
               const Expanded(child: SizedBox()),
               Tooltip(
                 message: "强制重新检索数据",

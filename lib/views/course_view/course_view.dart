@@ -1,10 +1,9 @@
-import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:flutter/material.dart';
 
 import 'package:scannmay_toolkit/model/jupiter.dart';
-import 'package:scannmay_toolkit/functions/utils/utils.dart';
 import 'package:scannmay_toolkit/views/course_view/course_card.dart';
+import 'package:scannmay_toolkit/components/jupiter_data_status_bar.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
 
 class CourseView extends StatefulWidget {
@@ -15,7 +14,6 @@ class CourseView extends StatefulWidget {
 }
 
 class _CourseViewState extends State<CourseView> {
-  final lastUpdatedTime = AssignmentNotifierBgWorker.lastUpdateTime;
   final courses = AssignmentNotifierBgWorker.isar.jupiterDatas.filter().idEqualTo(0).findFirstSync()!.courses!;
 
   @override
@@ -24,17 +22,7 @@ class _CourseViewState extends State<CourseView> {
       margin: const EdgeInsets.fromLTRB(24, 8, 24, 24),
       child: Column(
         children: [
-          Flex(
-            direction: Axis.horizontal,
-            children: [
-              ElevatedButton(
-                onPressed: () => Utils.openUrl("https://login.jupitered.com/login/"),
-                child: const Text("前往 Jupiter"),
-              ),
-              const SizedBox(width: 16),
-              Obx(() => Text("上次数据更新于: $lastUpdatedTime")),
-            ],
-          ),
+          const JupiterDataStatusBar(),
           const SizedBox(height: 24),
           Expanded(
             child: SingleChildScrollView(
