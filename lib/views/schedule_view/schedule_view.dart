@@ -18,7 +18,7 @@ class _ScheduleViewState extends State<ScheduleView> {
       child: const Column(
         children: [
           JupiterDataStatusBar(),
-          SizedBox(height: 24),
+          SizedBox(height: 16),
           Text("作业日程表页面仍在开发中，敬请期待~ (开发者爆肝 ing)"),
         ],
       ),

@@ -23,7 +23,7 @@ class _CourseViewState extends State<CourseView> {
       child: Column(
         children: [
           const JupiterDataStatusBar(),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
               child: Column(

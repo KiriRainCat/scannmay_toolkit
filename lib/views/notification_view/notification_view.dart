@@ -92,7 +92,7 @@ class NotificationViewState extends State<NotificationView> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
