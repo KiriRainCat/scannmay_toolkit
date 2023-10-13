@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
+import 'package:flutter/material.dart';
+
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
+import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
 
 class JupiterDataStatusBar extends StatelessWidget {
   const JupiterDataStatusBar({
@@ -26,14 +27,18 @@ class JupiterDataStatusBar extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(
               children: [
-                if (AssignmentNotifierBgWorker.lastUpdateTime.value.isNotEmpty) ...[
-                  Tooltip(
-                    verticalOffset: -45,
-                    message: "此时间为上次成功检索数据的时间 [如此次检索成功时间将为本次]",
-                    child: Obx(() => Text(AssignmentNotifierBgWorker.lastUpdateTime.value)),
-                  ),
-                  const SizedBox(width: 6),
-                ],
+                Tooltip(
+                  verticalOffset: -45,
+                  message: "此时间为上次成功检索数据的时间 [如此次检索成功时间将为本次]",
+                  child: Obx(() => Text(AssignmentNotifierBgWorker.lastUpdateTime.value)),
+                ),
+                Obx(() {
+                  if (AssignmentNotifierBgWorker.lastUpdateTime.value.isNotEmpty) {
+                    return const SizedBox(width: 6);
+                  } else {
+                    return const SizedBox();
+                  }
+                }),
                 Obx(() {
                   if (AssignmentNotifierBgWorker.dataFetchStatus.startsWith("+")) {
                     return const Tooltip(
