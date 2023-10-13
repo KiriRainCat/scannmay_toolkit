@@ -45,8 +45,8 @@ app.*.map.json
 
 # vscode
 .vscode/*
+!.vscode/out
 !.vscode/settings.json
-!.vscode/docs
 
 # Temp Chromium
 .local-chrome
