@@ -25,14 +25,7 @@ class CourseCard extends StatelessWidget {
         (a, b) {
           if (a.due == null || a.due!.isEmpty) return 1;
           if (b.due == null || b.due!.isEmpty) return 1;
-
-          final dateArr1 = a.due!.split("/");
-          final dateArr2 = b.due!.split("/");
-
-          final dueA = DateTime(0, int.parse(dateArr1[0]), int.parse(dateArr1[1]));
-          final dueB = DateTime(0, int.parse(dateArr2[0]), int.parse(dateArr2[1]));
-
-          return dueB.compareTo(dueA);
+          return DateTime.parse(b.due!).compareTo(DateTime.parse(a.due!));
         },
       );
 
