@@ -23,6 +23,8 @@ class AutoUpdater {
 
   ///? fetch 服务器上的 release.json 并比较版本 返回是否有更新
   static void checkForUpdate({bool atStartup = false}) async {
+    await Future.delayed(const Duration(seconds: 1));
+
     const releaseJson = "https://github.com/KiriRainCat/scannmay_toolkit/releases/latest/download/release.json";
 
     final path = "${Utils.getAppDir(true)}/release.json";
