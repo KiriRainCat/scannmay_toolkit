@@ -118,6 +118,7 @@ class CourseCard extends StatelessWidget {
   // TODO: 在 Notification Card 中也有类似方法，记得以后提取出来
   void fetchAssignmentDesc(String assignmentTitle) async {
     Get.back();
+    Get.back();
     UI.showNotification("请等待数据检索完成的提示信息，期间请不要重复点击检索数据按钮");
 
     // 打开浏览器并登录 Jupiter
