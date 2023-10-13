@@ -26,12 +26,14 @@ class JupiterDataStatusBar extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(
               children: [
-                Tooltip(
-                  verticalOffset: -45,
-                  message: "此时间为上次成功检索数据的时间 [如此次检索成功时间将为本次]",
-                  child: Obx(() => Text(AssignmentNotifierBgWorker.lastUpdateTime.value)),
-                ),
-                const SizedBox(width: 6),
+                if (AssignmentNotifierBgWorker.lastUpdateTime.value.isNotEmpty) ...[
+                  Tooltip(
+                    verticalOffset: -45,
+                    message: "此时间为上次成功检索数据的时间 [如此次检索成功时间将为本次]",
+                    child: Obx(() => Text(AssignmentNotifierBgWorker.lastUpdateTime.value)),
+                  ),
+                  const SizedBox(width: 6),
+                ],
                 Obx(() {
                   if (AssignmentNotifierBgWorker.dataFetchStatus.startsWith("+")) {
                     return const Tooltip(
