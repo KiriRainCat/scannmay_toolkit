@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:ffi/ffi.dart';
@@ -21,11 +23,14 @@ class AutoUpdater {
 
   ///? fetch 服务器上的 release.json 并比较版本 返回是否有更新
   static void checkForUpdate({bool atStartup = false}) async {
-    const releaseJson = "https://www.kiriraincat.eu.org/061202/files/scannmay-toolkit/release.json";
+    const releaseJson = "https://github.com/KiriRainCat/scannmay_toolkit/releases/latest/download/release.json";
 
+    final path = "${Utils.getAppDir(true)}/release.json";
     late final List releases;
+
     try {
-      releases = (await dio.get(releaseJson)).data;
+      await dio.download(releaseJson, path);
+      releases = json.decode(await File(path).readAsString());
     } on DioException {
       Log.logger.e("远程服务器离线或网络错误");
       UI.showNotification("远程服务器离线或网络错误", type: NotificationType.error);
@@ -69,7 +74,7 @@ class AutoUpdater {
     // 获取应用目录
     final path = "${Utils.getAppDir(true)}/$setupFile";
 
-    const setupFileUrl = "https://www.kiriraincat.eu.org/061202/files/scannmay-toolkit/$setupFile";
+    const setupFileUrl = "https://github.com/KiriRainCat/scannmay_toolkit/releases/latest/download/$setupFile";
     try {
       await dio.download(setupFileUrl, path, onReceiveProgress: onReceiveProgress);
     } on DioException {
