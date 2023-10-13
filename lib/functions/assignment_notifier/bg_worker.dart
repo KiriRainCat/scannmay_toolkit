@@ -297,7 +297,7 @@ class AssignmentNotifierBgWorker {
         assignments = assignments
             .map(
               (arr) => Assignment()
-                ..due = arr[0]
+                ..due = _fromatJupiterDate(arr[0])
                 ..title = arr[1]
                 ..score = arr[2],
             )
@@ -502,12 +502,20 @@ class AssignmentNotifierBgWorker {
         diff["score"]!.add(item);
         diff["Δscore"]!.add(
           Assignment()
-            ..due = item.due
+            ..due = _fromatJupiterDate(item.due!)
             ..title = item.title
             ..score = "${searchResult.first.score} → ${item.score}",
         );
       }
     }
     return diff;
+  }
+
+  static String _fromatJupiterDate(String raw) {
+    if (raw.isEmpty) return "";
+    final parts = raw.split("/");
+    if (parts[0].length < 2) parts[0] = "0${parts[0]}";
+    if (parts[1].length < 2) parts[1] = "0${parts[1]}";
+    return "${DateTime.now().year}-${parts[0]}-${parts[1]}";
   }
 }
