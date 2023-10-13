@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
+import 'package:flutter/material.dart';
 
 import 'package:scannmay_toolkit/constants.dart';
 import 'package:scannmay_toolkit/model/jupiter.dart';
@@ -19,14 +19,6 @@ class NotificationCard extends StatelessWidget {
   });
 
   final Message message;
-
-  String formatDueDate(String raw) {
-    if (raw.isEmpty) return "00/00";
-    final parts = raw.split("/");
-    if (parts[0].length < 2) parts[0] = "0${parts[0]}";
-    if (parts[1].length < 2) parts[1] = "0${parts[1]}";
-    return parts.join("/");
-  }
 
   void fetchAssignmentDesc(String assignmentTitle) async {
     Get.back();
@@ -122,7 +114,7 @@ class NotificationCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text("From: ${message.course}"),
                       const SizedBox(height: 4),
-                      Text("Due: ${formatDueDate(assignment.due!)}"),
+                      Text("Due: ${Utils.formatDueDate(assignment.due!)}"),
                       const SizedBox(height: 4),
                       Text("Score: [ ${assignment.score} ]"),
                       const SizedBox(height: 16),
@@ -184,7 +176,7 @@ class NotificationCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Text(formatDueDate(assignment.due!)),
+                      Text(Utils.formatDueDate(assignment.due!)),
                       const SizedBox(width: 12),
                       Text(
                         assignment.title!,

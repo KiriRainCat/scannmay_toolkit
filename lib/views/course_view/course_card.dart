@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:scannmay_toolkit/constants.dart';
 import 'package:scannmay_toolkit/model/jupiter.dart';
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
+import 'package:scannmay_toolkit/functions/utils/utils.dart';
 import 'package:scannmay_toolkit/functions/utils/logger.dart';
 import 'package:scannmay_toolkit/components/rounded_button.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
@@ -16,14 +17,6 @@ class CourseCard extends StatelessWidget {
   });
 
   final Course course;
-
-  String formatDueDate(String raw) {
-    if (raw.isEmpty) return "00/00";
-    final parts = raw.split("/");
-    if (parts[0].length < 2) parts[0] = "0${parts[0]}";
-    if (parts[1].length < 2) parts[1] = "0${parts[1]}";
-    return parts.join("/");
-  }
 
   void showCourseInfo(BuildContext context) {
     final courses = AssignmentNotifierBgWorker.isar.jupiterDatas.filter().idEqualTo(0).findFirstSync()!.courses!;
@@ -86,7 +79,7 @@ class CourseCard extends StatelessWidget {
                             direction: Axis.horizontal,
                             children: [
                               Text(
-                                formatDueDate(assignment.due!),
+                                Utils.formatDueDate(assignment.due!),
                                 style: const TextStyle(color: Colors.black),
                               ),
                               const SizedBox(width: 16),
@@ -209,7 +202,7 @@ class CourseCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text("From: ${course.name}"),
                       const SizedBox(height: 4),
-                      Text("Due: ${formatDueDate(assignment.due!)}"),
+                      Text("Due: ${Utils.formatDueDate(assignment.due!)}"),
                       const SizedBox(height: 4),
                       Text("Score: [ ${assignment.score} ]"),
                       const SizedBox(height: 16),

@@ -1,7 +1,7 @@
 import 'package:ffi/ffi.dart';
 import 'package:isar/isar.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:win32/win32.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:scannmay_toolkit/constants.dart';
 import 'package:scannmay_toolkit/model/setting.dart';
@@ -73,6 +73,16 @@ class Utils {
   static String formatTime(DateTime time) {
     final timeStr = time.toString();
     return timeStr.substring(0, timeStr.length - 7);
+  }
+
+  ///? 格式化并输出 DueDate 字符串
+  static String formatDueDate(String? raw) {
+    if (raw == null || raw.isEmpty) return "00/00";
+    final parts = raw.split("-");
+    parts.removeAt(0);
+    if (parts[0].length < 2) parts[0] = "0${parts[0]}";
+    if (parts[1].length < 2) parts[1] = "0${parts[1]}";
+    return parts.join("/");
   }
 
   ///? 通过用户默认浏览器打开指定 URL
