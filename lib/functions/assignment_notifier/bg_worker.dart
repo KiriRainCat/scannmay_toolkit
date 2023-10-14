@@ -386,7 +386,6 @@ class AssignmentNotifierBgWorker {
     jupiterData.courses = storedCourses;
     isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
     lastUpdateTime.value = Utils.formatTime(DateTime.now());
-    dataFetchStatus.value = "+";
     localNotifier.notify(
       LocalNotification(
         title: modifiedCourses.isEmpty ? "$modification 门科目的整体成绩有变动" : "共有 ${modifiedCourses.length} 门科目有新作业 | 成绩",
@@ -424,6 +423,7 @@ class AssignmentNotifierBgWorker {
     }
 
     browser.close();
+    dataFetchStatus.value = "+";
     Log.logger.i("浏览器关闭");
   }
 

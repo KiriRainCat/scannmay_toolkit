@@ -147,6 +147,7 @@ class CourseCard extends StatelessWidget {
     AssignmentNotifierBgWorker.isar.writeTxn(() => AssignmentNotifierBgWorker.isar.jupiterDatas.put(jupiterData));
 
     AssignmentNotifierBgWorker.browser.close();
+    AssignmentNotifierBgWorker.dataFetchStatus.value = "+";
     Log.logger.i("浏览器关闭");
     UI.showNotification("$assignmentTitle 的数据检索完成啦，重新打开详情页以查看信息");
   }
