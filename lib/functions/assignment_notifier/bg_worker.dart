@@ -116,12 +116,13 @@ class AssignmentNotifierBgWorker {
         await Future.delayed(Constants.universalDelay);
         break;
       } catch (e) {
-        if (timesOfErr > 3) {
+        if (timesOfErr > 2) {
           browser.close();
           Log.logger.e("浏览器关闭", error: e);
           final error = "网络错误 或 请求被拦截(请修改设置中的 Cloudflare Bypass Cookies): $e";
           dataFetchStatus.value = "-$error";
           UI.showNotification(error, type: NotificationType.error);
+          return null;
         }
         timesOfErr++;
         await Future.delayed(Constants.universalDelay);
@@ -513,6 +514,7 @@ class AssignmentNotifierBgWorker {
 
   static String _fromatJupiterDate(String raw) {
     if (raw.isEmpty) return "";
+    if (raw.contains("-")) return raw;
     final parts = raw.split("/");
     if (parts[0].length < 2) parts[0] = "0${parts[0]}";
     if (parts[1].length < 2) parts[1] = "0${parts[1]}";
