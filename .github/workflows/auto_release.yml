@@ -22,5 +22,5 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            release.json
-            ScannmayToolkit-Setup.exe
+            "./.vscode/out/release.json"
+            "./.vscode/out/ScannmayToolkit-Setup.exe"
