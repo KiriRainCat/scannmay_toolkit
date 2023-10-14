@@ -26,7 +26,7 @@ class AutoUpdater {
     await Future.delayed(const Duration(seconds: 1));
 
     const releaseJson =
-        "https://github.rc1844.workers.dev/KiriRainCat/scannmay_toolkit/releases/latest/download/release.json";
+        "https://ghproxy.com/https://github.com/KiriRainCat/scannmay_toolkit/releases/latest/download/release.json";
 
     final path = "${Utils.getAppDir(true)}/release.json";
     late final List releases;
@@ -34,7 +34,8 @@ class AutoUpdater {
     try {
       await dio.download(releaseJson, path);
       releases = json.decode(await File(path).readAsString());
-    } on DioException {
+    } on DioException catch (e) {
+      print(e);
       Log.logger.e("远程服务器离线或网络错误");
       UI.showNotification("远程服务器离线或网络错误", type: NotificationType.error);
       return;
@@ -81,7 +82,7 @@ class AutoUpdater {
     final path = "${Utils.getAppDir(true)}/$setupFile";
 
     const setupFileUrl =
-        "https://github.rc1844.workers.dev/KiriRainCat/scannmay_toolkit/releases/latest/download/$setupFile";
+        "https://ghproxy.com/https://github.com/KiriRainCat/scannmay_toolkit/releases/latest/download/$setupFile";
     try {
       await dio.download(setupFileUrl, path, onReceiveProgress: onReceiveProgress);
     } on DioException {
