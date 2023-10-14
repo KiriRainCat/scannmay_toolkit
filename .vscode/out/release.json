@@ -53,6 +53,6 @@
   },
   {
     "version": "0.1.7-beta",
-    "log": "添加demo版日程页功能\n修复一堆 bug"
+    "log": "添加 demo 版日程页功能\n修复一堆 bug\nClear Database"
   }
 ]
