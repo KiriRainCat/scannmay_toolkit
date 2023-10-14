@@ -62,5 +62,9 @@
   {
     "version": "0.1.9-beta",
     "log": "继续修自动更新下载源"
+  },
+  {
+    "version": "0.1.10-beta",
+    "log": "修 bug"
   }
 ]
