@@ -54,5 +54,9 @@
   {
     "version": "0.1.7-beta",
     "log": "添加 demo 版日程页功能\n修复一堆 bug\nClear Database"
+  },
+  {
+    "version": "0.1.8-beta",
+    "log": "自动更新源加速\n修复一些 bug"
   }
 ]
