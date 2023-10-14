@@ -90,7 +90,7 @@ class _ScheduleViewState extends State<ScheduleView> {
                     margin: const EdgeInsets.fromLTRB(8, 8, 8, 8),
                     child: ElevatedButton(
                       onPressed: () {
-                        if (assignment.desc?.isNotEmpty ?? false) {
+                        if ((assignment.desc?.isNotEmpty ?? false) && assignment.desc != "None") {
                           Get.dialog(
                             AlertDialog(
                               title: const Text("Instructions"),
