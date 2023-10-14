@@ -50,5 +50,9 @@
   {
     "version": "0.1.6-beta",
     "log": "UI 改动\n 自动更新换源"
+  },
+  {
+    "version": "0.1.7-beta",
+    "log": "添加demo版日程页功能\n修复一堆 bug"
   }
 ]
