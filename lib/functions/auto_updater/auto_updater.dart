@@ -25,7 +25,8 @@ class AutoUpdater {
   static void checkForUpdate({bool atStartup = false}) async {
     await Future.delayed(const Duration(seconds: 1));
 
-    const releaseJson = "https://github.com/KiriRainCat/scannmay_toolkit/releases/latest/download/release.json";
+    const releaseJson =
+        "https://github.rc1844.workers.dev/KiriRainCat/scannmay_toolkit/releases/latest/download/release.json";
 
     final path = "${Utils.getAppDir(true)}/release.json";
     late final List releases;
@@ -79,7 +80,8 @@ class AutoUpdater {
     // 获取应用目录
     final path = "${Utils.getAppDir(true)}/$setupFile";
 
-    const setupFileUrl = "https://github.com/KiriRainCat/scannmay_toolkit/releases/latest/download/$setupFile";
+    const setupFileUrl =
+        "https://github.rc1844.workers.dev/KiriRainCat/scannmay_toolkit/releases/latest/download/$setupFile";
     try {
       await dio.download(setupFileUrl, path, onReceiveProgress: onReceiveProgress);
     } on DioException {
