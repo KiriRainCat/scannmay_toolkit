@@ -29,6 +29,18 @@ class Log {
     final logFile = File("${logPath.path}/${time.year}-${time.month}-${time.day}-logs.txt");
 
     if (!logFile.existsSync()) logFile.createSync();
+    _purgeLogFolder(logPath);
     return logFile;
+  }
+
+  static void _purgeLogFolder(Directory logPath) async {
+    final logs = logPath.listSync();
+    if (logs.length > 7) {
+      for (var log in logs) {
+        if (DateTime.now().difference((await log.stat()).changed).inDays > 7) {
+          await log.delete();
+        }
+      }
+    }
   }
 }
