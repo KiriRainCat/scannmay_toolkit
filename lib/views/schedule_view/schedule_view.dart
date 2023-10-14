@@ -58,7 +58,7 @@ class _ScheduleViewState extends State<ScheduleView> {
 
   String getDescStatus(String? raw) {
     if (raw == null) return "Instructions Not Fetched";
-    if (raw.isEmpty) return "No Instructions";
+    if (raw == "None") return "No Instructions";
     return "Click to Check Instructions";
   }
 
