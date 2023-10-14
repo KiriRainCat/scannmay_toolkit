@@ -43,6 +43,9 @@ class AutoUpdater {
 
     // 如果比较版本后发现有更新
     if (releaseVersion != version) {
+      // 停止任何数据检索
+      AssignmentNotifierBgWorker.forceStop();
+
       // 处理更新日志
       final List<String> releaseLogs = [];
       for (var i = releases.length - 1; i >= 0; i--) {
