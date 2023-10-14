@@ -66,5 +66,9 @@
   {
     "version": "0.1.10-beta",
     "log": "修 bug"
+  },
+  {
+    "version": "0.1.11-beta",
+    "log": "bug 大杂烩(开发者哭泣)"
   }
 ]
