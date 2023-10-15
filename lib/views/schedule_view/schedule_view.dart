@@ -20,7 +20,7 @@ class _ScheduleViewState extends State<ScheduleView> {
   final isar = AssignmentNotifierBgWorker.isar;
   late final StreamSubscription<JupiterNotification?> notificationStreamListener;
 
-  final assignmentList = <Assignment>[];
+  List<Assignment> assignmentList = [];
 
   @override
   void initState() {
@@ -37,18 +37,19 @@ class _ScheduleViewState extends State<ScheduleView> {
 
   // TODO: 备忘
   void fetchAssignmentsByDate() {
-    assignmentList.clear();
+    final list = <Assignment>[];
     final courses = isar.jupiterDatas.getSync(0)!.courses;
     for (var course in courses!) {
       for (var assignment in course.assignments!) {
         if (assignment.due!.isNotEmpty) {
           final diffInDays = DateTime.parse(assignment.due!).difference(DateTime.now()).inDays;
           if (diffInDays > -1 && diffInDays < 5) {
-            assignmentList.add(assignment);
+            list.add(assignment);
           }
         }
       }
     }
+    setState(() => assignmentList = list);
   }
 
   void watchMessageQueue() {
