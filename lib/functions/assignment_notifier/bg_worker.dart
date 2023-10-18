@@ -204,6 +204,7 @@ class AssignmentNotifierBgWorker {
       await Future.delayed(Constants.universalDelay);
       await jupiterPage.click("#schoolyearlist > div:nth-child(1)");
     } catch (e) {
+      browser.close();
       Log.logger.e("浏览器关闭", error: e);
       const error = "学年列表出现异常，无法正常选择最新学年";
       dataFetchStatus.value = "-$error";
