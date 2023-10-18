@@ -22,5 +22,5 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            "./.vscode/out/release.json"
-            "./.vscode/out/ScannmayToolkit-Setup.exe"
+            *.json
+            *.exe
