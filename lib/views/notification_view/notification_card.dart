@@ -50,7 +50,7 @@ class NotificationCard extends StatelessWidget {
       Log.logger.e("浏览器关闭", error: e);
       AssignmentNotifierBgWorker.lastUpdateTime.value.replaceAll(RegExp(r" (数据检索中...)"), "数据检索失败");
       UI.showNotification("Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败: $e", type: NotificationType.error);
-      AssignmentNotifierBgWorker.browser.close();
+      AssignmentNotifierBgWorker.closeBrowser();
       return;
     }
 
@@ -63,7 +63,7 @@ class NotificationCard extends StatelessWidget {
     await AssignmentNotifierBgWorker.getAssignmentDesc(jupiterPage, course, assignments);
     AssignmentNotifierBgWorker.isar.writeTxn(() => AssignmentNotifierBgWorker.isar.jupiterDatas.put(jupiterData));
 
-    AssignmentNotifierBgWorker.browser.close();
+    AssignmentNotifierBgWorker.closeBrowser();
     Log.logger.i("浏览器关闭");
     AssignmentNotifierBgWorker.dataFetchStatus.value = "+";
     UI.showNotification("$assignmentTitle 的数据检索完成啦，重新打开详情页以查看信息");

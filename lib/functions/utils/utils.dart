@@ -1,6 +1,8 @@
 import 'package:ffi/ffi.dart';
 import 'package:isar/isar.dart';
 import 'package:win32/win32.dart';
+
+import 'package:process_run/process_run.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:scannmay_toolkit/constants.dart';
@@ -9,6 +11,9 @@ import 'package:scannmay_toolkit/model/jupiter.dart';
 import 'package:scannmay_toolkit/model/notification.dart';
 
 class Utils {
+  ///? Shell 系统命令行对象
+  static Shell shell = Shell();
+
   ///? 初始化与连接数据库
   static Future<Isar> initDatabase() async {
     final isar = await Isar.open(
