@@ -35,9 +35,8 @@ class AutoUpdater {
       await dio.download(releaseJson, path);
       releases = json.decode(await File(path).readAsString());
     } on DioException catch (e) {
-      print(e);
-      Log.logger.e("远程服务器离线或网络错误");
-      UI.showNotification("远程服务器离线或网络错误", type: NotificationType.error);
+      Log.logger.e("远程服务器离线或网络错误", error: e);
+      UI.showNotification("远程服务器离线或网络错误: $e", type: NotificationType.error);
       return;
     }
 
