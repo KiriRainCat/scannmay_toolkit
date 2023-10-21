@@ -24,6 +24,11 @@ class Course {
 
 @embedded
 class Assignment {
+  int? status;
+
+  @Ignore()
+  String? from;
+
   String? due;
 
   String? title;

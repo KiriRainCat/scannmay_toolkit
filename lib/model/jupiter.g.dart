@@ -1130,8 +1130,13 @@ const AssignmentSchema = Schema(
       name: r'score',
       type: IsarType.string,
     ),
-    r'title': PropertySchema(
+    r'status': PropertySchema(
       id: 3,
+      name: r'status',
+      type: IsarType.long,
+    ),
+    r'title': PropertySchema(
+      id: 4,
       name: r'title',
       type: IsarType.string,
     )
@@ -1184,7 +1189,8 @@ void _assignmentSerialize(
   writer.writeString(offsets[0], object.desc);
   writer.writeString(offsets[1], object.due);
   writer.writeString(offsets[2], object.score);
-  writer.writeString(offsets[3], object.title);
+  writer.writeLong(offsets[3], object.status);
+  writer.writeString(offsets[4], object.title);
 }
 
 Assignment _assignmentDeserialize(
@@ -1197,7 +1203,8 @@ Assignment _assignmentDeserialize(
   object.desc = reader.readStringOrNull(offsets[0]);
   object.due = reader.readStringOrNull(offsets[1]);
   object.score = reader.readStringOrNull(offsets[2]);
-  object.title = reader.readStringOrNull(offsets[3]);
+  object.status = reader.readLongOrNull(offsets[3]);
+  object.title = reader.readStringOrNull(offsets[4]);
   return object;
 }
 
@@ -1215,6 +1222,8 @@ P _assignmentDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
+      return (reader.readLongOrNull(offset)) as P;
+    case 4:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1658,6 +1667,76 @@ extension AssignmentQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'score',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Assignment, Assignment, QAfterFilterCondition> statusIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'status',
+      ));
+    });
+  }
+
+  QueryBuilder<Assignment, Assignment, QAfterFilterCondition>
+      statusIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'status',
+      ));
+    });
+  }
+
+  QueryBuilder<Assignment, Assignment, QAfterFilterCondition> statusEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'status',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Assignment, Assignment, QAfterFilterCondition> statusGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'status',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Assignment, Assignment, QAfterFilterCondition> statusLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'status',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Assignment, Assignment, QAfterFilterCondition> statusBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'status',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
