@@ -61,7 +61,7 @@ class Languages extends Translations {
           "info4": "已有浏览器正在检索数据",
           "info5": "数据检索已开始，请耐心等待",
           "info6": "*s = 该设置仅在点击保存后生效 | *r = 该设置仅在应用重启后生效",
-          "desc7": "用于绕过 Jupiter CF 反爬的 Cookies (请求 header 中的整段 Cookies 字符串)",
+          "desc5": "用于绕过 Jupiter CF 反爬的 Cookies (请求 header 中的整段 Cookies 字符串)",
           "err1": "字符串不得为空或与旧值相同",
           "err2": "数据检索间隔不合法",
           "err3": "Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败",
