@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import 'package:scannmay_toolkit/main.dart';
@@ -46,7 +47,7 @@ class _UpdateNoticeDialogState extends State<UpdateNoticeDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("更新提示"),
+      title: Text("updateNotice".tr),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +76,7 @@ class _UpdateNoticeDialogState extends State<UpdateNoticeDialog> {
           // 在下载时显示进度条
           if (ifDownloading()) ...[
             const SizedBox(height: 16),
-            const Text("更新中...", style: TextStyle(fontWeight: FontWeight.w600)),
+            Text("updating".tr, style: const TextStyle(fontWeight: FontWeight.w600)),
             const SizedBox(height: 4),
             LinearProgressIndicator(
               value: progress,
@@ -87,11 +88,11 @@ class _UpdateNoticeDialogState extends State<UpdateNoticeDialog> {
       actions: [
         TextButton(
           onPressed: ifDownloading() ? null : () => AutoUpdater.updateSoftware(onReceiveProgress),
-          child: const Text("立即升级"),
+          child: Text("updateImmediately".tr),
         ),
         TextButton(
           onPressed: ifDownloading() ? null : () => Navigator.of(context).pop(false),
-          child: const Text("取消", style: TextStyle(color: Colors.grey)),
+          child: Text("cancel".tr, style: const TextStyle(color: Colors.grey)),
         ),
       ],
     );

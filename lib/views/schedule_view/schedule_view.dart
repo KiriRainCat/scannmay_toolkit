@@ -96,12 +96,12 @@ class _ScheduleViewState extends State<ScheduleView> {
                 Expanded(
                   child: DropdownButtonFormField(
                     value: selectedFilter[0],
-                    items: const [
-                      DropdownMenuItem(value: 3, child: Text("截止于 3 日内的作业")),
-                      DropdownMenuItem(value: 5, child: Text("截止于 5 日内的作业")),
-                      DropdownMenuItem(value: 7, child: Text("截止于 7 日内的作业")),
-                      DropdownMenuItem(value: 14, child: Text("截止于 14 日内的作业")),
-                      DropdownMenuItem(value: 30, child: Text("截止于 30 日内的作业")),
+                    items: [
+                      DropdownMenuItem(value: 3, child: Text("${"deadlineTill".tr} 3 ${"daysTillHomework".tr}")),
+                      DropdownMenuItem(value: 5, child: Text("${"deadlineTill".tr} 5 ${"daysTillHomework".tr}")),
+                      DropdownMenuItem(value: 7, child: Text("${"deadlineTill".tr} 7 ${"daysTillHomework".tr}")),
+                      DropdownMenuItem(value: 14, child: Text("${"deadlineTill".tr} 14 ${"daysTillHomework".tr}")),
+                      DropdownMenuItem(value: 30, child: Text("${"deadlineTill".tr} 30 ${"daysTillHomework".tr}")),
                     ],
                     onChanged: (value) {
                       setState(() => selectedFilter[0] = value);
@@ -113,9 +113,9 @@ class _ScheduleViewState extends State<ScheduleView> {
                 Expanded(
                   child: DropdownButtonFormField(
                     value: selectedFilter[1],
-                    items: const [
-                      DropdownMenuItem(value: null, child: Text("未完成")),
-                      DropdownMenuItem(value: 1, child: Text("已完成")),
+                    items: [
+                      DropdownMenuItem(value: null, child: Text("incomplete".tr)),
+                      DropdownMenuItem(value: 1, child: Text("complete".tr)),
                     ],
                     onChanged: (value) {
                       setState(() => selectedFilter[1] = value);

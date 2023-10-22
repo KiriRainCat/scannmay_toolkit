@@ -78,11 +78,11 @@ class _ConfirmDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text("确认", style: TextStyle(color: Colors.red)),
+          child: Text("submit".tr, style: const TextStyle(color: Colors.red)),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text("取消", style: TextStyle(color: Colors.grey)),
+          child: Text("cancel".tr, style: const TextStyle(color: Colors.grey)),
         ),
       ],
     );

@@ -117,13 +117,13 @@ class SettingManager {
         title: const Text("Cloudflare Bypass Cookies"),
         content: TextField(
           controller: controller,
-          decoration: const InputDecoration(hintText: "Cookies 字符串", prefixIcon: Icon(Icons.cookie)),
+          decoration: InputDecoration(hintText: "cookieString".tr, prefixIcon: const Icon(Icons.cookie)),
         ),
       ),
     );
 
     if (controller.text.isEmpty || controller.text == settings["cfCookieStr"]) {
-      UI.showNotification("字符串不得为空或与旧值相同", type: NotificationType.error);
+      UI.showNotification("err1".tr, type: NotificationType.error);
       return;
     }
     controller.text = controller.text.replaceAll(RegExp("\n"), "");
@@ -137,7 +137,7 @@ class SettingManager {
 
   //* ------------------------------- 需要保存生效的设置 ------------------------------ *//
   static Future<String> jupiterDataFetchInterval(int interval) async {
-    if (interval < 10 || interval > 120) return "数据检索间隔不合法：$interval";
+    if (interval < 10 || interval > 120) return "${"err2".tr}：$interval";
     settings["jupiterDataFetchInterval"] = interval.toString();
 
     // 重启 Jupiter 数据检索 后台进程

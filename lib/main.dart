@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:scannmay_toolkit/languages.dart';
 import 'package:system_tray/system_tray.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:local_notifier/local_notifier.dart';
@@ -79,6 +80,9 @@ class _MainAppState extends State<MainApp> with WindowListener {
       decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(16))),
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
+        translations: Languages(),
+        locale: Get.deviceLocale,
+        fallbackLocale: const Locale("zh", "CN"),
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),

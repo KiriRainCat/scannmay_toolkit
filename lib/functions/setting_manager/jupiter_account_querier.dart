@@ -45,18 +45,18 @@ class _JupiterAccountQueryDialogState extends State<JupiterAccountQueryDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       actionsAlignment: MainAxisAlignment.center,
-      title: const Text("Jupiter 账号信息"),
+      title: Text("jupiterAccountInfo".tr),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: nameTextController,
-            decoration: const InputDecoration(hintText: "用户名/SID", prefixIcon: Icon(Icons.person)),
+            decoration: InputDecoration(hintText: "usernameOrSid".tr, prefixIcon: const Icon(Icons.person)),
           ),
           TextField(
             controller: passwordTextController,
             obscureText: true,
-            decoration: const InputDecoration(hintText: "密码", prefixIcon: Icon(Icons.lock)),
+            decoration: InputDecoration(hintText: "password".tr, prefixIcon: const Icon(Icons.lock)),
           ),
         ],
       ),
@@ -65,7 +65,7 @@ class _JupiterAccountQueryDialogState extends State<JupiterAccountQueryDialog> {
           onPressed: loading ? null : () => saveAccount(() => Navigator.of(context).pop()),
           child: loading
               ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator())
-              : const Text("确认", style: TextStyle(color: Colors.blue)),
+              : Text("confirm".tr, style: const TextStyle(color: Colors.blue)),
         ),
       ],
     );

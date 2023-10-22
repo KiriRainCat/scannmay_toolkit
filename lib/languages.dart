@@ -1,0 +1,58 @@
+import 'package:get/get.dart';
+
+class Languages extends Translations {
+  @override
+  Map<String, Map<String, String>> get keys => {
+        "zh_CN": {
+          "goToJupiter": "前往 Jupiter",
+          "dataFetchTimeTooltip": "此时间为上次成功检索数据的时间 [如此次检索成功时间将为本次]",
+          "dateFetchSuccess": "数据检索成功",
+          "dataFetchInProgress": "数据检索中...",
+          "dataFetchFailure": "数据检索失败",
+          "pleaseLogin": "请登录~",
+          "usernameOrEmail": "用户名/邮箱",
+          "password": "密码",
+          "login": "登录",
+          "updateNotice": "更新提示",
+          "updating": "更新中...",
+          "updateImmediately": "立即升级",
+          "cancel": "取消",
+          "jupiterAccountInfo": "Jupiter 账号信息",
+          "usernameOrSid": "用户名/SID",
+          "confirm": "确认",
+          "cookieString": "Cookie 字符串",
+          "author": "应用作者: 柒夜雨猫",
+          "version": "应用版本",
+          "checkUpdate": "检查更新",
+          "browserClose": "浏览器关闭",
+          "homePage": "主页",
+          "class": "科目",
+          "notification": "通知",
+          "calender": "日历",
+          "setting": "设置",
+          "about": "关于",
+          "re": "重新",
+          "fetchDirection": "检索 Directions 信息",
+          "newHomework": "新作业提示",
+          "remove": "移除",
+          "tooltip": "提示",
+          "forceFetchData": "强制重新检索数据",
+          "clearQueue": "清空队列",
+          "deadlineTill": "截止于",
+          "daysTillHomework": "日内的作业",
+          "incomplete": "未完成",
+          "complete": "完成",
+          "info1": "请等待数据检索完成的提示信息，期间请不要重复点击检索数据按钮",
+          "info2": "的数据检索完成啦，重新打开详情页以查看信息",
+          "info3": "确定要清空消息队列吗？",
+          "info4": "已有浏览器正在检索数据",
+          "info5": "数据检索已开始，请耐心等待",
+          "err1": "字符串不得为空或与旧值相同",
+          "err2": "数据检索间隔不合法",
+          "err3": "Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败",
+        },
+        "en_US": {
+          "goToJupiter": "Go to Jupiter",
+        }
+      };
+}

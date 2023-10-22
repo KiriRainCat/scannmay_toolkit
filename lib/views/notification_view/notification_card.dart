@@ -22,7 +22,7 @@ class NotificationCard extends StatelessWidget {
 
   void fetchAssignmentDesc(String assignmentTitle) async {
     Get.back();
-    UI.showNotification("请等待数据检索完成的提示信息，期间请不要重复点击检索数据按钮");
+    UI.showNotification("info1".tr);
 
     // 打开浏览器并登录 Jupiter
     final jupiterPage = await AssignmentNotifierBgWorker.openJupiterPage();
@@ -47,9 +47,9 @@ class NotificationCard extends StatelessWidget {
       await jupiterPage.waitForSelector("div[class='hide null']");
       await Future.delayed(Constants.universalDelay);
     } catch (e) {
-      Log.logger.e("浏览器关闭", error: e);
-      AssignmentNotifierBgWorker.lastUpdateTime.value.replaceAll(RegExp(r" (数据检索中...)"), "数据检索失败");
-      UI.showNotification("Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败: $e", type: NotificationType.error);
+      Log.logger.e("browserClose".tr, error: e);
+      AssignmentNotifierBgWorker.lastUpdateTime.value.replaceAll(RegExp(r" (${" "})"), "数据检索失败"); // FIXME
+      UI.showNotification("${"err3".tr}: $e", type: NotificationType.error);
       AssignmentNotifierBgWorker.closeBrowser();
       return;
     }
@@ -64,9 +64,9 @@ class NotificationCard extends StatelessWidget {
     AssignmentNotifierBgWorker.isar.writeTxn(() => AssignmentNotifierBgWorker.isar.jupiterDatas.put(jupiterData));
 
     AssignmentNotifierBgWorker.closeBrowser();
-    Log.logger.i("浏览器关闭");
+    Log.logger.i("browserClose".tr);
     AssignmentNotifierBgWorker.dataFetchStatus.value = "+";
-    UI.showNotification("$assignmentTitle 的数据检索完成啦，重新打开详情页以查看信息");
+    UI.showNotification("$assignmentTitle ${"info2".tr}");
   }
 
   void showAssignmentInfo(Assignment assignment) async {
@@ -87,7 +87,7 @@ class NotificationCard extends StatelessWidget {
               children: [
                 RoundedButton(
                   onPressed: () => fetchAssignmentDesc(assignment.title!),
-                  tooltip: "${desc == 'Not Fetched' ? '' : '重新'}检索 Directions 信息",
+                  tooltip: "${desc == 'Not Fetched' ? '' : 're'.tr}${"fetchDirection".tr}",
                   buttonContent: Icon(Icons.replay_outlined, size: 18, color: Colors.blue.shade900),
                   margin: const EdgeInsets.fromLTRB(0, 8, 10, 0),
                   width: 20,
@@ -139,7 +139,7 @@ class NotificationCard extends StatelessWidget {
       foregroundDecoration: BoxDecoration(
         border: Border(
           left: BorderSide(
-            color: message.title == "新作业提示" ? Colors.green.shade400 : Colors.blue.shade300,
+            color: message.title == "newHomework".tr ? Colors.green.shade400 : Colors.blue.shade300,
             width: 10,
           ),
         ),
@@ -206,7 +206,7 @@ class NotificationCard extends StatelessWidget {
           IconButton(
             onPressed: () => NotificationQueue.pop(message),
             icon: const Icon(Icons.close),
-            tooltip: "移除",
+            tooltip: "remove".tr,
           ),
         ],
       ),

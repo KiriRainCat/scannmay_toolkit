@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:scannmay_toolkit/main.dart';
 import 'package:scannmay_toolkit/views/course_view/course_view.dart';
@@ -12,29 +13,29 @@ const textStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 12.6);
 
 ///? 路由列表
 final destinations = [
-  const NavigationRailDestination(
-    icon: Icon(Icons.home),
-    label: Text("主页", style: textStyle),
+  NavigationRailDestination(
+    icon: const Icon(Icons.home),
+    label: Text("homePage".tr, style: textStyle),
   ),
-  const NavigationRailDestination(
-    icon: Icon(Icons.collections_bookmark),
-    label: Text("科目", style: textStyle),
+  NavigationRailDestination(
+    icon: const Icon(Icons.collections_bookmark),
+    label: Text("class".tr, style: textStyle),
   ),
-  const NavigationRailDestination(
-    icon: Icon(Icons.notifications),
-    label: Text("通知", style: textStyle),
+  NavigationRailDestination(
+    icon: const Icon(Icons.notifications),
+    label: Text("notification".tr, style: textStyle),
   ),
-  const NavigationRailDestination(
-    icon: Icon(Icons.date_range),
-    label: Text("日历", style: textStyle),
+  NavigationRailDestination(
+    icon: const Icon(Icons.date_range),
+    label: Text("calender".tr, style: textStyle),
   ),
-  const NavigationRailDestination(
-    icon: Icon(Icons.settings),
-    label: Text("设置", style: textStyle),
+  NavigationRailDestination(
+    icon: const Icon(Icons.settings),
+    label: Text("setting".tr, style: textStyle),
   ),
-  const NavigationRailDestination(
-    icon: Icon(Icons.info),
-    label: Text("关于", style: textStyle),
+  NavigationRailDestination(
+    icon: const Icon(Icons.info),
+    label: Text("about".tr, style: textStyle),
   ),
 ];
 

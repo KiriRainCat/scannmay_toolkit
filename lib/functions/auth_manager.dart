@@ -86,18 +86,18 @@ class _UserAuthDialogState extends State<UserAuthDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       actionsAlignment: MainAxisAlignment.center,
-      title: const Text("请登录~"),
+      title: Text("pleaseLogin".tr),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: nameTextController,
-            decoration: const InputDecoration(hintText: "用户名/邮箱", prefixIcon: Icon(Icons.person)),
+            decoration: InputDecoration(hintText: "usernameOrEmail".tr, prefixIcon: const Icon(Icons.person)),
           ),
           TextField(
             controller: passwordTextController,
             obscureText: true,
-            decoration: const InputDecoration(hintText: "密码", prefixIcon: Icon(Icons.lock)),
+            decoration: InputDecoration(hintText: "password".tr, prefixIcon: const Icon(Icons.lock)),
           ),
         ],
       ),
@@ -106,7 +106,7 @@ class _UserAuthDialogState extends State<UserAuthDialog> {
           onPressed: loading ? null : () => login(() => Navigator.of(context).pop()),
           child: loading
               ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator())
-              : const Text("登录", style: TextStyle(color: Colors.blue)),
+              : Text("login".tr, style: const TextStyle(color: Colors.blue)),
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:scannmay_toolkit/functions/auto_updater/auto_updater.dart';
 
@@ -13,18 +14,18 @@ class AboutView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "应用作者: 柒夜雨猫",
+          "author".tr,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(),
         ),
         const SizedBox(height: 8),
         Text(
-          "应用版本: v$version",
+          "${"version".tr}: v$version",
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(),
         ),
         const SizedBox(height: 4),
-        const TextButton(
+        TextButton(
           onPressed: AutoUpdater.checkForUpdate,
-          child: Text("检查更新"),
+          child: Text("checkUpdate".tr),
         ),
       ],
     );

@@ -19,7 +19,7 @@ class JupiterDataStatusBar extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: () => Utils.openUrl("https://login.jupitered.com/login/"),
-          child: const Text("前往 Jupiter"),
+          child: Text("goToJupiter".tr),
         ),
         const SizedBox(width: 8),
         Card(
@@ -29,7 +29,7 @@ class JupiterDataStatusBar extends StatelessWidget {
               children: [
                 Tooltip(
                   verticalOffset: -45,
-                  message: "此时间为上次成功检索数据的时间 [如此次检索成功时间将为本次]",
+                  message: "dataFetchTimeTooltip".tr,
                   child: Obx(() => Text(AssignmentNotifierBgWorker.lastUpdateTime.value)),
                 ),
                 Obx(() {
@@ -41,18 +41,19 @@ class JupiterDataStatusBar extends StatelessWidget {
                 }),
                 Obx(() {
                   if (AssignmentNotifierBgWorker.dataFetchStatus.startsWith("+")) {
-                    return const Tooltip(
-                      message: "数据检索成功",
-                      child: Icon(Icons.check_box, color: Colors.green),
+                    return Tooltip(
+                      message: "dateFetchSuccess".tr,
+                      child: const Icon(Icons.check_box, color: Colors.green),
                     );
                   } else if (AssignmentNotifierBgWorker.dataFetchStatus.startsWith(".")) {
-                    return const Tooltip(
-                      message: "数据检索中...",
-                      child: Icon(Icons.wifi_protected_setup, color: Colors.blue),
+                    return Tooltip(
+                      message: "dataFetchInProgress".tr,
+                      child: const Icon(Icons.wifi_protected_setup, color: Colors.blue),
                     );
                   } else {
                     return Tooltip(
-                      message: "数据检索失败: ${"\n"}${AssignmentNotifierBgWorker.dataFetchStatus.substring(1)}",
+                      message:
+                          "${"dataFetchFailure".tr}: ${"\n"}${AssignmentNotifierBgWorker.dataFetchStatus.substring(1)}",
                       margin: const EdgeInsets.symmetric(horizontal: 256),
                       child: const Icon(Icons.nearby_error, color: Colors.red),
                     );

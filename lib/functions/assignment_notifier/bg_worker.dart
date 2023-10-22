@@ -108,7 +108,7 @@ class AssignmentNotifierBgWorker {
       Log.logger.i("浏览器启动");
     } catch (e) {
       closeBrowser();
-      Log.logger.e("浏览器关闭", error: e);
+      Log.logger.e("browserClose".tr, error: e);
       final error = "Chromium 自动化浏览器启动异常: $e";
       dataFetchStatus.value = "-$error";
       UI.showNotification(error, type: NotificationType.error);
@@ -126,7 +126,7 @@ class AssignmentNotifierBgWorker {
       } catch (e) {
         if (timesOfErr > 2) {
           closeBrowser();
-          Log.logger.e("浏览器关闭", error: e);
+          Log.logger.e("browserClose".tr, error: e);
           final error = "网络错误 或 请求被拦截(请修改设置中的 Cloudflare Bypass Cookies): $e";
           dataFetchStatus.value = "-$error";
           UI.showNotification(error, type: NotificationType.error);
@@ -151,7 +151,7 @@ class AssignmentNotifierBgWorker {
       await jupiterPage.click("#menulist_region1 > div[val='xx_xx']");
     } catch (e) {
       closeBrowser();
-      Log.logger.e("浏览器关闭", error: e);
+      Log.logger.e("browserClose".tr, error: e);
       final error = "登录 Jupiter 时发生未知异常: $e";
       dataFetchStatus.value = "-$error";
       UI.showNotification(error, type: NotificationType.error);
@@ -166,7 +166,7 @@ class AssignmentNotifierBgWorker {
         await jupiterPage.click("#loginbtn");
       } catch (e) {
         closeBrowser();
-        Log.logger.e("浏览器关闭", error: e);
+        Log.logger.e("browserClose".tr, error: e);
         final error = "登录 Jupiter 时发生未知异常: $e";
         dataFetchStatus.value = "-$error";
         UI.showNotification(error, type: NotificationType.error);
@@ -179,7 +179,7 @@ class AssignmentNotifierBgWorker {
         await jupiterPage.click("#loginbtn");
       } catch (e) {
         closeBrowser();
-        Log.logger.e("浏览器关闭", error: e);
+        Log.logger.e("browserClose".tr, error: e);
         final error = "登录 Jupiter 时发生未知异常: $e";
         dataFetchStatus.value = "-$error";
         UI.showNotification(error, type: NotificationType.error);
@@ -194,7 +194,7 @@ class AssignmentNotifierBgWorker {
       // 用于特殊调用，直接检查账号是否可用
       if (name != null && password != null) {
         closeBrowser();
-        Log.logger.i("浏览器关闭");
+        Log.logger.i("browserClose".tr);
         return true;
       }
     } catch (_) {
@@ -213,7 +213,7 @@ class AssignmentNotifierBgWorker {
       await jupiterPage.click("#schoolyearlist > div:nth-child(1)");
     } catch (e) {
       closeBrowser();
-      Log.logger.e("浏览器关闭", error: e);
+      Log.logger.e("browserClose".tr, error: e);
       const error = "学年列表出现异常，无法正常选择最新学年";
       dataFetchStatus.value = "-$error";
       UI.showNotification(error, type: NotificationType.error);
@@ -227,7 +227,7 @@ class AssignmentNotifierBgWorker {
     // 如果传入的 retry 为 0 直接终止
     if (retry == 0) {
       closeBrowser();
-      Log.logger.i("浏览器关闭");
+      Log.logger.i("browserClose".tr);
       return;
     }
 
@@ -252,7 +252,7 @@ class AssignmentNotifierBgWorker {
       closeBrowser();
       lastUpdateTime.value = Utils.formatTime(DateTime.now());
       dataFetchStatus.value = "+";
-      Log.logger.i("浏览器关闭");
+      Log.logger.i("browserClose".tr);
       return;
     }
 
@@ -375,7 +375,7 @@ class AssignmentNotifierBgWorker {
         await Future.delayed(Constants.universalDelay);
       }
     } catch (e) {
-      Log.logger.e("浏览器关闭", error: e);
+      Log.logger.e("browserClose".tr, error: e);
       final error = "Chromium 自动化浏览器出现上下文异常，将进行重试: $e";
       dataFetchStatus.value = "-$error";
       UI.showNotification(error, type: NotificationType.error);
@@ -389,7 +389,7 @@ class AssignmentNotifierBgWorker {
       closeBrowser();
       lastUpdateTime.value = Utils.formatTime(DateTime.now());
       dataFetchStatus.value = "+";
-      Log.logger.i("浏览器关闭");
+      Log.logger.i("browserClose".tr);
       return;
     }
 
@@ -417,7 +417,7 @@ class AssignmentNotifierBgWorker {
           await jupiterPage.waitForSelector("div[class='hide null']");
           await Future.delayed(Constants.universalDelay);
         } catch (e) {
-          Log.logger.e("浏览器关闭", error: e);
+          Log.logger.e("browserClose".tr, error: e);
           final error = "Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败: $e";
           dataFetchStatus.value = "-$error";
           UI.showNotification(error, type: NotificationType.error);
@@ -434,7 +434,7 @@ class AssignmentNotifierBgWorker {
 
     closeBrowser();
     dataFetchStatus.value = "+";
-    Log.logger.i("浏览器关闭");
+    Log.logger.i("browserClose".tr);
   }
 
   static Future<void> getAssignmentDesc(Page jupiterPage, Course course, List<Assignment> assignments) async {
@@ -464,7 +464,7 @@ class AssignmentNotifierBgWorker {
       } catch (e) {
         if (timesOfErr > 3) {
           closeBrowser();
-          Log.logger.e("浏览器关闭", error: e);
+          Log.logger.e("browserClose".tr, error: e);
           final error = "Chromium 自动化浏览器出现多次上下文异常，作业详情信息获取失败: $e";
           dataFetchStatus.value = "-$error";
           UI.showNotification(error, type: NotificationType.error);

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:flutter/material.dart';
 
@@ -52,7 +53,7 @@ class NotificationViewState extends State<NotificationView> {
   }
 
   void clearNotificationQueue() async {
-    final result = await UI.queryUserConfirm("提示", "确定要清空消息队列吗？");
+    final result = await UI.queryUserConfirm("tooltip".tr, "info3".tr);
     if (result) NotificationQueue.clear();
   }
 
@@ -60,12 +61,12 @@ class NotificationViewState extends State<NotificationView> {
     // 判断是否有浏览器正在进行数据检索，有的话不开始新的检索进程
     try {
       if (AssignmentNotifierBgWorker.browser.isConnected) {
-        UI.showNotification("已有浏览器正在检索数据");
+        UI.showNotification("info4".tr);
         return;
       }
     } catch (_) {}
 
-    UI.showNotification("数据检索已开始，请耐心等待");
+    UI.showNotification("info5".tr);
     AssignmentNotifierBgWorker.checkForNewAssignment();
   }
 
@@ -79,7 +80,7 @@ class NotificationViewState extends State<NotificationView> {
             additionalWidgets: [
               const Expanded(child: SizedBox()),
               Tooltip(
-                message: "强制重新检索数据",
+                message: "forceFetchData".tr,
                 child: ElevatedButton(
                   onPressed: checkForAssignments,
                   child: const Icon(Icons.refresh),
@@ -88,7 +89,7 @@ class NotificationViewState extends State<NotificationView> {
               const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: clearNotificationQueue,
-                child: const Text("清空队列", style: TextStyle(color: Colors.red)),
+                child: Text("clearQueue".tr, style: const TextStyle(color: Colors.red)),
               ),
             ],
           ),
