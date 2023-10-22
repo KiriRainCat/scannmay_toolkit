@@ -48,7 +48,7 @@ class NotificationCard extends StatelessWidget {
       await Future.delayed(Constants.universalDelay);
     } catch (e) {
       Log.logger.e("browserClose".tr, error: e);
-      AssignmentNotifierBgWorker.lastUpdateTime.value.replaceAll(RegExp(r" (${" "})"), "数据检索失败"); // FIXME
+      AssignmentNotifierBgWorker.dataFetchStatus.value = "-$e";
       UI.showNotification("${"err3".tr}: $e", type: NotificationType.error);
       await AssignmentNotifierBgWorker.closeBrowser();
       return;
