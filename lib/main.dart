@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:scannmay_toolkit/languages.dart';
 import 'package:system_tray/system_tray.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:local_notifier/local_notifier.dart';
@@ -10,6 +9,7 @@ import 'package:window_manager/window_manager.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 
+import 'package:scannmay_toolkit/languages.dart';
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
 import 'package:scannmay_toolkit/functions/auth_manager.dart';
 import 'package:scannmay_toolkit/views/global_nav/global_nav_view.dart';
@@ -25,14 +25,14 @@ void main(List<String> args) async {
   // 获取版本号
   version = (await PackageInfo.fromPlatform()).version;
 
-  // 初始化与启动应用
-  await _initAndRunApp(args);
-
-  // 开启数据库
+// 开启数据库
   final isar = await Utils.initDatabase();
 
   // 从数据库获取用户设置
   await SettingManager.init(isar);
+
+  // 初始化与启动应用
+  await _initAndRunApp(args);
 
   // 确保用户已登录
   await AuthManager.ensureLoggedIn();
@@ -81,7 +81,7 @@ class _MainAppState extends State<MainApp> with WindowListener {
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         translations: Languages(),
-        locale: Get.deviceLocale,
+        locale: _getLocale(),
         fallbackLocale: const Locale("zh", "CN"),
         theme: ThemeData(
           useMaterial3: true,
@@ -97,6 +97,20 @@ class _MainAppState extends State<MainApp> with WindowListener {
   void onWindowClose() {
     windowManager.hide();
   }
+}
+
+Locale? _getLocale() {
+  if (SettingManager.settings["locale"] == null) {
+    final locale = Get.deviceLocale;
+    if (locale.toString() == "zh_Hans_CN") {
+      return const Locale("zh", "CN");
+    }
+    return Get.deviceLocale;
+  }
+  return Locale(
+    SettingManager.settings["locale"]!.split("_")[0],
+    SettingManager.settings["locale"]!.split("_")[1],
+  );
 }
 
 Future<void> _initAndRunApp(List<String> args) async {

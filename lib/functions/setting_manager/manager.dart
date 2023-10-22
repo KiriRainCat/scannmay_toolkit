@@ -135,6 +135,15 @@ class SettingManager {
     isar.writeTxn(() => isar.settings.put(setting..value = controller.text));
   }
 
+  static Future<void> locale(Locale locale) async {
+    // 更新语言
+    Get.updateLocale(locale);
+    // 写入数据库
+    final setting = await isar.settings.filter().nameEqualTo("locale").findFirst() ?? Setting()
+      ..name = "locale";
+    isar.writeTxn(() => isar.settings.put(setting..value = locale.toString()));
+  }
+
   //* ------------------------------- 需要保存生效的设置 ------------------------------ *//
   static Future<String> jupiterDataFetchInterval(int interval) async {
     if (interval < 10 || interval > 120) return "${"err2".tr}：$interval";

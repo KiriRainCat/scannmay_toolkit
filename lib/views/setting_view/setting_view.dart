@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -35,6 +38,26 @@ class _SettingViewState extends State<SettingView> {
                       setState(() => settings["launchOnStartup"] = flag.toString());
                       SettingManager.launchOnStartup(flag);
                     },
+                  ),
+                ),
+                SettingField(
+                  property: "language".tr,
+                  desc: "desc1".tr,
+                  field: Row(
+                    children: [
+                      SizedBox(
+                        width: 100,
+                        child: DropdownButtonFormField(
+                          value: Get.locale,
+                          items: const [
+                            DropdownMenuItem(value: Locale("zh", "CN"), child: Text("简体中文")),
+                            DropdownMenuItem(value: Locale("en", "US"), child: Text("English")),
+                          ],
+                          onChanged: (value) => SettingManager.locale(value!),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                    ],
                   ),
                 ),
                 SettingField(
