@@ -34,7 +34,7 @@ class _JupiterAccountQueryDialogState extends State<JupiterAccountQueryDialog> {
 
     final err = await SettingManager.jupiterAccount(nameTextController.text, passwordTextController.text);
     if (err == "success") {
-      UI.showNotification("校验成功，已保存");
+      UI.showNotification("verifiedSaved".tr);
       func();
     }
 

@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
+import 'dart:ffi';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:ffi/ffi.dart';
@@ -35,8 +35,8 @@ class AutoUpdater {
       await dio.download(releaseJson, path);
       releases = json.decode(await File(path).readAsString());
     } on DioException catch (e) {
-      Log.logger.e("远程服务器离线或网络错误", error: e);
-      UI.showNotification("远程服务器离线或网络错误: $e", type: NotificationType.error);
+      Log.logger.e("err4".tr, error: e);
+      UI.showNotification("${"err4".tr}: $e", type: NotificationType.error);
       return;
     }
 
@@ -66,7 +66,7 @@ class AutoUpdater {
         barrierDismissible: false,
       );
     } else if (!atStartup) {
-      UI.showNotification("暂无更新");
+      UI.showNotification("noUpdate".tr);
     }
   }
 
@@ -85,8 +85,8 @@ class AutoUpdater {
     try {
       await dio.download(setupFileUrl, path, onReceiveProgress: onReceiveProgress);
     } on DioException {
-      Log.logger.e("远程服务器离线或网络错误");
-      UI.showNotification("远程服务器离线或网络错误", type: NotificationType.error);
+      Log.logger.e("err4".tr);
+      UI.showNotification("err4".tr, type: NotificationType.error);
       return;
     }
 

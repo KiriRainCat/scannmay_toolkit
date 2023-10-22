@@ -168,7 +168,7 @@ class CourseCard extends StatelessWidget {
               children: [
                 RoundedButton(
                   onPressed: () => fetchAssignmentDesc(assignment.title!),
-                  tooltip: "${desc == 'Not Fetched' ? '' : '重新'}检索 Directions 信息",
+                  tooltip: "${desc == 'Not Fetched' ? '' : "re".tr}${"fetchDirection".tr}",
                   buttonContent: Icon(Icons.replay_outlined, size: 18, color: Colors.blue.shade900),
                   margin: const EdgeInsets.fromLTRB(0, 8, 10, 0),
                   width: 20,

@@ -35,10 +35,10 @@ class SettingManager {
     }
 
     if (msg.isNotEmpty) {
-      Log.logger.e("设置保存异常: $msg");
+      Log.logger.e("${"err5".tr}: $msg");
       UI.showNotification(msg.substring(0, msg.length - 1));
     } else {
-      UI.showNotification("保存成功");
+      UI.showNotification("saveSuccess".tr);
     }
   }
 

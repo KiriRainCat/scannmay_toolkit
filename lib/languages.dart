@@ -48,6 +48,9 @@ class Languages extends Translations {
           "changeAccount": "更改账号",
           "saveSettings": "保存设置",
           "change": "更改",
+          "noUpdate": "暂无更新",
+          "verifiedSaved": "校验成功，已保存",
+          "saveSuccess": "保存成功",
           "desc1": "软件的界面语言，如果个别翻译不存在，将会默认使用中文",
           "desc2": "在系统启动后自动打开应用并隐藏至托盘",
           "desc3": "登录 Jupiter 并查看是否有新成绩或作业的时间间隔 (10 min ≤ t ≤ 120 min) *s",
@@ -62,6 +65,8 @@ class Languages extends Translations {
           "err1": "字符串不得为空或与旧值相同",
           "err2": "数据检索间隔不合法",
           "err3": "Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败",
+          "err4": "远程服务器离线或网络错误",
+          "err5": "设置保存异常",
         },
         "en_US": {
           "goToJupiter": "Go to Jupiter",
@@ -108,6 +113,9 @@ class Languages extends Translations {
           "changeAccount": "Change Account",
           "saveSettings": "Save Settings",
           "change": "Change",
+          "noUpdate": "No Update for Now",
+          "verifiedSaved": "Verified, being saved",
+          "saveSuccess": "Successfully saved",
           "desc1": " Language of the software; if some translations are missing, it will be Chinese",
           "desc2": "Automatically open the application and hide it in the system tray after startup",
           "desc3": "Interval for checking new grades or homework (10 min ≤ t ≤ 120 min) *s",
@@ -124,6 +132,7 @@ class Languages extends Translations {
           "err1": "The string must not be empty or the same as the old value",
           "err2": "Invalid data retrieval interval",
           "err3": "Chromium automated browser encountered a context exception and failed to retrieve homework details",
+          "err4": "Remote server offline or network issue",
         },
       };
 }

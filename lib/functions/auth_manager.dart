@@ -31,8 +31,8 @@ class AuthManager {
         return false;
       }
 
-      Log.logger.e("远程服务器离线或网络错误");
-      UI.showNotification("远程服务器离线或网络错误", type: NotificationType.error);
+      Log.logger.e("err4".tr);
+      UI.showNotification("err4".tr, type: NotificationType.error);
       return false;
     }
 
@@ -50,8 +50,8 @@ class AuthManager {
         UI.showNotification(e.response?.data["msg"], type: NotificationType.error);
       }
 
-      Log.logger.e("远程服务器离线或网络错误");
-      UI.showNotification("远程服务器离线或网络错误", type: NotificationType.error);
+      Log.logger.e("err4".tr);
+      UI.showNotification("err4".tr, type: NotificationType.error);
     }
 
     UI.showNotification(res.data["msg"]);
