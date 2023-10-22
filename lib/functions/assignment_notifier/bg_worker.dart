@@ -35,10 +35,10 @@ class AssignmentNotifierBgWorker {
     bgWorker = Timer.periodic(Duration(minutes: int.parse(dataFetchInterval)), (_) => checkForNewAssignment());
   }
 
-  static void forceStop() {
+  static void forceStop() async {
     try {
       AssignmentNotifierBgWorker.bgWorker.cancel();
-      AssignmentNotifierBgWorker.closeBrowser();
+      await AssignmentNotifierBgWorker.closeBrowser();
     } catch (_) {}
   }
 
@@ -48,12 +48,13 @@ class AssignmentNotifierBgWorker {
     isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
   }
 
-  static void closeBrowser() async {
+  static Future<void> closeBrowser() async {
     browser.close();
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 100));
     try {
       Utils.shell.run("taskkill /f /t /im chrome.exe");
     } catch (_) {}
+    await Future.delayed(const Duration(milliseconds: 100));
   }
 
   static Future<Page?> openJupiterPage() async {
@@ -107,7 +108,7 @@ class AssignmentNotifierBgWorker {
 
       Log.logger.i("浏览器启动");
     } catch (e) {
-      closeBrowser();
+      await closeBrowser();
       Log.logger.e("browserClose".tr, error: e);
       final error = "Chromium 自动化浏览器启动异常: $e";
       dataFetchStatus.value = "-$error";
@@ -125,7 +126,7 @@ class AssignmentNotifierBgWorker {
         break;
       } catch (e) {
         if (timesOfErr > 2) {
-          closeBrowser();
+          await closeBrowser();
           Log.logger.e("browserClose".tr, error: e);
           final error = "网络错误 或 请求被拦截(请修改设置中的 Cloudflare Bypass Cookies): $e";
           dataFetchStatus.value = "-$error";
@@ -150,7 +151,7 @@ class AssignmentNotifierBgWorker {
       await Future.delayed(Constants.universalDelay);
       await jupiterPage.click("#menulist_region1 > div[val='xx_xx']");
     } catch (e) {
-      closeBrowser();
+      await closeBrowser();
       Log.logger.e("browserClose".tr, error: e);
       final error = "登录 Jupiter 时发生未知异常: $e";
       dataFetchStatus.value = "-$error";
@@ -165,7 +166,7 @@ class AssignmentNotifierBgWorker {
         await jupiterPage.type("#text_password1", password);
         await jupiterPage.click("#loginbtn");
       } catch (e) {
-        closeBrowser();
+        await closeBrowser();
         Log.logger.e("browserClose".tr, error: e);
         final error = "登录 Jupiter 时发生未知异常: $e";
         dataFetchStatus.value = "-$error";
@@ -178,7 +179,7 @@ class AssignmentNotifierBgWorker {
         await jupiterPage.type("#text_password1", SettingManager.settings["jupiterPassword"]!);
         await jupiterPage.click("#loginbtn");
       } catch (e) {
-        closeBrowser();
+        await closeBrowser();
         Log.logger.e("browserClose".tr, error: e);
         final error = "登录 Jupiter 时发生未知异常: $e";
         dataFetchStatus.value = "-$error";
@@ -193,12 +194,12 @@ class AssignmentNotifierBgWorker {
 
       // 用于特殊调用，直接检查账号是否可用
       if (name != null && password != null) {
-        closeBrowser();
+        await closeBrowser();
         Log.logger.i("browserClose".tr);
         return true;
       }
     } catch (_) {
-      closeBrowser();
+      await closeBrowser();
       const error = "Jupiter 账号或密码错误";
       dataFetchStatus.value = "-$error";
       UI.showNotification(error, type: NotificationType.error);
@@ -212,7 +213,7 @@ class AssignmentNotifierBgWorker {
       await Future.delayed(Constants.universalDelay);
       await jupiterPage.click("#schoolyearlist > div:nth-child(1)");
     } catch (e) {
-      closeBrowser();
+      await closeBrowser();
       Log.logger.e("browserClose".tr, error: e);
       const error = "学年列表出现异常，无法正常选择最新学年";
       dataFetchStatus.value = "-$error";
@@ -226,7 +227,7 @@ class AssignmentNotifierBgWorker {
   static void checkForNewAssignment({int? retry}) async {
     // 如果传入的 retry 为 0 直接终止
     if (retry == 0) {
-      closeBrowser();
+      await closeBrowser();
       Log.logger.i("browserClose".tr);
       return;
     }
@@ -244,12 +245,12 @@ class AssignmentNotifierBgWorker {
       courseCount = (await getCourses(jupiterPage)).length;
       await jupiterPage.click("#touchnavbtn");
     } catch (_) {
-      closeBrowser();
+      await closeBrowser();
       return;
     }
 
     if (courseCount == 0) {
-      closeBrowser();
+      await closeBrowser();
       lastUpdateTime.value = Utils.formatTime(DateTime.now());
       dataFetchStatus.value = "+";
       Log.logger.i("browserClose".tr);
@@ -379,14 +380,14 @@ class AssignmentNotifierBgWorker {
       final error = "Chromium 自动化浏览器出现上下文异常，将进行重试: $e";
       dataFetchStatus.value = "-$error";
       UI.showNotification(error, type: NotificationType.error);
-      closeBrowser();
+      await closeBrowser();
       checkForNewAssignment(retry: retry == null ? 3 : --retry);
       return;
     }
 
     // 如无修改就不再写入数据库，反之写入
     if (modification == 0) {
-      closeBrowser();
+      await closeBrowser();
       lastUpdateTime.value = Utils.formatTime(DateTime.now());
       dataFetchStatus.value = "+";
       Log.logger.i("browserClose".tr);
@@ -421,7 +422,7 @@ class AssignmentNotifierBgWorker {
           final error = "Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败: $e";
           dataFetchStatus.value = "-$error";
           UI.showNotification(error, type: NotificationType.error);
-          closeBrowser();
+          await closeBrowser();
         }
 
         final course = jupiterData.courses!.firstWhere((course) => (course.name == courseName));
@@ -432,7 +433,7 @@ class AssignmentNotifierBgWorker {
       isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
     }
 
-    closeBrowser();
+    await closeBrowser();
     dataFetchStatus.value = "+";
     Log.logger.i("browserClose".tr);
   }
@@ -463,7 +464,7 @@ class AssignmentNotifierBgWorker {
         await Future.delayed(Constants.universalDelay);
       } catch (e) {
         if (timesOfErr > 3) {
-          closeBrowser();
+          await closeBrowser();
           Log.logger.e("browserClose".tr, error: e);
           final error = "Chromium 自动化浏览器出现多次上下文异常，作业详情信息获取失败: $e";
           dataFetchStatus.value = "-$error";
