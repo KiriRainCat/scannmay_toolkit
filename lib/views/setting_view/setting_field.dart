@@ -23,12 +23,12 @@ class SettingField extends StatelessWidget {
         Flex(
           direction: Axis.horizontal,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(property, style: primaryTextStyle),
-                Text(desc, style: secondaryTextStyle)
-              ],
+            Expanded(
+              flex: 10,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [Text(property, style: primaryTextStyle), Text(desc, style: secondaryTextStyle)],
+              ),
             ),
             const Expanded(child: SizedBox()),
             field,

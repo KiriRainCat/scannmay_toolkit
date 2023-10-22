@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,8 +28,8 @@ class _SettingViewState extends State<SettingView> {
             child: Column(
               children: [
                 SettingField(
-                  property: "开机自启动",
-                  desc: "在系统启动后自动打开应用并隐藏至托盘",
+                  property: "${"autoBoot".tr} [目前请不要开启！有 BUG]",
+                  desc: "desc2".tr,
                   field: Switch(
                     value: bool.parse(settings["launchOnStartup"]!),
                     onChanged: (flag) {
@@ -61,8 +59,8 @@ class _SettingViewState extends State<SettingView> {
                   ),
                 ),
                 SettingField(
-                  property: "数据检索间隔",
-                  desc: "登录 Jupiter 并查看是否有新成绩或作业的时间间隔 (10 min ≤ t ≤ 120 min) *s",
+                  property: "dataFetchInterval".tr,
+                  desc: "desc3".tr,
                   field: Row(
                     children: [
                       SizedBox(
@@ -86,19 +84,19 @@ class _SettingViewState extends State<SettingView> {
                   ),
                 ),
                 SettingField(
-                  property: "Jupiter 账号",
-                  desc: "用于登录 Jupiter ED 进行数据检索的学生账号",
+                  property: "jupiterAccountInfo".tr,
+                  desc: "desc4".tr,
                   field: ElevatedButton(
                     onPressed: () => JupiterAccountQuerier.updateAccount(),
-                    child: const Text("更改账号"),
+                    child: Text("changeAccount".tr),
                   ),
                 ),
                 SettingField(
                   property: "Cloudflare Bypass Cookies",
-                  desc: "用于绕过 Jupiter Cloudflare 反爬机制的 Cookies (请求 header 中的整段 Cookies 字符串)",
+                  desc: "desc5".tr,
                   field: ElevatedButton(
                     onPressed: () => SettingManager.cfCookieStr(),
-                    child: const Text("更改"),
+                    child: Text("change".tr),
                   ),
                 ),
               ],
@@ -109,7 +107,7 @@ class _SettingViewState extends State<SettingView> {
             direction: Axis.horizontal,
             children: [
               Text(
-                "*s = 该设置仅在点击保存后生效 | *r = 该设置仅在应用重启后生效",
+                "info6".tr,
                 style: TextStyle(color: Colors.red.withAlpha(920)),
               ),
               const Expanded(child: SizedBox()),
@@ -118,7 +116,7 @@ class _SettingViewState extends State<SettingView> {
                   SettingManager.saveSettings(settings.cast());
                   setState(() => settings = Map.from(SettingManager.settings));
                 },
-                child: const Text("保存设置", style: TextStyle(color: Colors.green)),
+                child: Text("saveSettings".tr, style: const TextStyle(color: Colors.green)),
               ),
             ],
           )
