@@ -50,6 +50,7 @@ class _SettingViewState extends State<SettingView> {
                           items: const [
                             DropdownMenuItem(value: Locale("zh", "CN"), child: Text("简体中文")),
                             DropdownMenuItem(value: Locale("en", "US"), child: Text("English")),
+                            DropdownMenuItem(value: Locale("ko", "KR"), child: Text("한국어")),
                           ],
                           onChanged: (value) => SettingManager.locale(value!),
                         ),
