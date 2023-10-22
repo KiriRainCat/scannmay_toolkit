@@ -76,8 +76,13 @@ class Utils {
 
   ///? 格式化 DateTime 为人能读的 String
   static String formatTime(DateTime time) {
-    final timeStr = time.toString();
-    return timeStr.substring(0, timeStr.length - 7);
+    var parts = <dynamic>[];
+    parts.addAll([time.month, time.day, time.hour, time.minute, time.second]);
+    parts = parts.map((e) {
+      if (e < 10) return e = "0$e";
+      return e;
+    }).toList();
+    return "${time.year}-${parts[0]}-${parts[1]} ${parts[2]}:${parts[3]}:${parts[4]}";
   }
 
   ///? 格式化并输出 DueDate 字符串
