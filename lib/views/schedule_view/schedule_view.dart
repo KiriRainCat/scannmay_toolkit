@@ -1,13 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 
+import 'package:scannmay_toolkit/model/jupiter.dart';
+import 'package:scannmay_toolkit/functions/utils/utils.dart';
 import 'package:scannmay_toolkit/components/jupiter_data_status_bar.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
-import 'package:scannmay_toolkit/functions/utils/utils.dart';
-import 'package:scannmay_toolkit/model/jupiter.dart';
-import 'package:scannmay_toolkit/model/notification.dart';
 
 class ScheduleView extends StatefulWidget {
   const ScheduleView({super.key});
@@ -18,7 +17,7 @@ class ScheduleView extends StatefulWidget {
 
 class _ScheduleViewState extends State<ScheduleView> {
   final isar = AssignmentNotifierBgWorker.isar;
-  late final StreamSubscription<JupiterNotification?> notificationStreamListener;
+  late final StreamSubscription<JupiterData?> notificationStreamListener;
 
   List<Assignment> assignmentList = [];
 
@@ -27,7 +26,7 @@ class _ScheduleViewState extends State<ScheduleView> {
   @override
   void initState() {
     fetchAssignmentsWithFilter();
-    watchMessageQueue();
+    watchChanges();
     super.initState();
   }
 
@@ -53,8 +52,8 @@ class _ScheduleViewState extends State<ScheduleView> {
     setState(() => assignmentList = list);
   }
 
-  void watchMessageQueue() {
-    final notificationStream = isar.jupiterNotifications.watchObject(0);
+  void watchChanges() {
+    final notificationStream = isar.jupiterDatas.watchObject(0);
     notificationStreamListener = notificationStream.listen((_) => fetchAssignmentsWithFilter());
   }
 
