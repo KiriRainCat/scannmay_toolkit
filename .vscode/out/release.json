@@ -90,5 +90,9 @@
   {
     "version": "0.2.3-beta",
     "log": "修复 bug"
+  },
+  {
+    "version": "0.2.4-beta",
+    "log": "没想到吧又是修 bug\n日程页添加Directions检索按钮\n添加 60 日内作业的选项"
   }
 ]
