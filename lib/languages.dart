@@ -116,7 +116,7 @@ class Languages extends Translations {
           "noUpdate": "No Update for Now",
           "verifiedSaved": "Verified, being saved",
           "saveSuccess": "Successfully saved",
-          "desc1": " Language of the software; if some translations are missing, it will be Chinese *r",
+          "desc1": " Language of the software; if translations are missing, default to Chinese *r",
           "desc2": "Automatically open the application and hide it in the system tray after startup",
           "desc3": "Interval for checking new grades or homework (10 min ≤ t ≤ 120 min) *s",
           "desc4": "Student account used for logging in to Jupiter ED for data retrieval",
