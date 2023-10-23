@@ -2,6 +2,10 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
+import 'package:scannmay_toolkit/constants.dart';
+import 'package:scannmay_toolkit/functions/utils/logger.dart';
+import 'package:scannmay_toolkit/functions/utils/ui.dart';
 
 import 'package:scannmay_toolkit/model/jupiter.dart';
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
@@ -67,13 +71,64 @@ class _ScheduleViewState extends State<ScheduleView> {
     isar.writeTxn(() => isar.jupiterDatas.put(jupiterData));
   }
 
+  // TODO: 提取函数
+  void fetchAssignmentDesc(Assignment assignment) async {
+    Get.back();
+    UI.showNotification("info1".tr);
+
+    // 打开浏览器并登录 Jupiter
+    final jupiterPage = await AssignmentNotifierBgWorker.openJupiterPage();
+    if (jupiterPage == null) return;
+    if (!(await AssignmentNotifierBgWorker.login(jupiterPage))) return;
+
+    // 前往对应课程页
+    final courses = await AssignmentNotifierBgWorker.getCourses(jupiterPage);
+    late final int idx;
+    for (var i = 0; i < courses.length; i++) {
+      if (await courses[i].evaluate("node => node.innerText") == assignment.from) {
+        idx = i;
+        break;
+      }
+    }
+
+    try {
+      courses[idx].hover();
+      await Future.delayed(Constants.universalDelay);
+      jupiterPage.mouse.down();
+      jupiterPage.mouse.up();
+      await jupiterPage.waitForSelector("div[class='hide null']");
+      await Future.delayed(Constants.universalDelay);
+    } catch (e) {
+      Log.logger.e("browserClose".tr, error: e);
+      AssignmentNotifierBgWorker.dataFetchStatus.value = "-$e";
+      UI.showNotification("${"err3".tr}: $e", type: NotificationType.error);
+      await AssignmentNotifierBgWorker.closeBrowser();
+      return;
+    }
+
+    // 获取数据库数据
+    final jupiterData = (await AssignmentNotifierBgWorker.isar.jupiterDatas.filter().idEqualTo(0).findFirst())!;
+    final c = jupiterData.courses!.firstWhere((item) => item.name == assignment.from);
+    final assignments = [Assignment()..title = assignment.title];
+
+    // 查询作业详情并写入数据库
+    await AssignmentNotifierBgWorker.getAssignmentDesc(jupiterPage, c, assignments);
+    AssignmentNotifierBgWorker.isar.writeTxn(() => AssignmentNotifierBgWorker.isar.jupiterDatas.put(jupiterData));
+
+    await AssignmentNotifierBgWorker.closeBrowser();
+    AssignmentNotifierBgWorker.dataFetchStatus.value = "+";
+    Log.logger.i("browserClose".tr);
+    UI.showNotification("${assignment.title} ${"info2".tr}");
+  }
+
   String getDescStatus(String? raw) {
     if (raw == null) return "Instructions Not Fetched";
     if (raw == "None") return "No Instructions";
     return "Click to Check Instructions";
   }
 
-  String formatDesc(String desc) {
+  String formatDesc(String? desc) {
+    if (desc == null || desc == "None") return getDescStatus(desc);
     desc = desc.replaceFirst(RegExp(r'Directions\n'), "");
     desc = desc.split("\n").join("\n\n");
     return desc;
@@ -130,64 +185,72 @@ class _ScheduleViewState extends State<ScheduleView> {
             child: GridView.count(
               crossAxisCount: 2,
               childAspectRatio: 2.8,
-              children: [
-                for (var assignment in assignmentList) ...[
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if ((assignment.desc?.isNotEmpty ?? false) && assignment.desc != "None") {
-                          Get.dialog(
-                            AlertDialog(
-                              title: const Text("Instructions"),
-                              content: SizedBox(
-                                width: 400,
-                                child: Text(formatDesc(assignment.desc!)),
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      style: ButtonStyle(
-                        splashFactory: NoSplash.splashFactory,
-                        shape: MaterialStatePropertyAll(
-                          ContinuousRectangleBorder(borderRadius: BorderRadiusDirectional.circular(4)),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(Utils.formatDueDate(assignment.due!)),
-                                Text(assignment.title!, style: const TextStyle(fontWeight: FontWeight.bold)),
-                                Text(getDescStatus(assignment.desc), style: const TextStyle(fontSize: 13)),
-                                Text(
-                                  "[ From: ${assignment.from!} ]",
-                                  style: const TextStyle(fontSize: 10, fontStyle: FontStyle.italic),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Checkbox(
-                            value: (assignment.status == null) ? false : true,
-                            onChanged: (value) {
-                              updateAssignmentStatus(value!, assignment.from!, assignment);
-                              assignmentList.removeWhere((a) => a.due == assignment.due && a.title == assignment.title);
-                              setState(() => assignmentList = assignmentList);
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ],
+              children: [for (var assignment in assignmentList) assignmentCard(assignment)],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Container assignmentCard(Assignment assignment) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+      child: ElevatedButton(
+        onPressed: () {
+          Get.dialog(
+            AlertDialog(
+              title: const Text("Instructions"),
+              content: SizedBox(
+                width: 400,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(formatDesc(assignment.desc)),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => fetchAssignmentDesc(assignment),
+                      child: Text("${assignment.desc != null ? "re".tr : ""}${"fetchDirection".tr}"),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+        style: ButtonStyle(
+          splashFactory: NoSplash.splashFactory,
+          shape: MaterialStatePropertyAll(
+            ContinuousRectangleBorder(borderRadius: BorderRadiusDirectional.circular(4)),
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(Utils.formatDueDate(assignment.due!)),
+                  Text(assignment.title!, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(getDescStatus(assignment.desc), style: const TextStyle(fontSize: 13)),
+                  Text(
+                    "[ From: ${assignment.from!} ]",
+                    style: const TextStyle(fontSize: 10, fontStyle: FontStyle.italic),
+                  ),
+                ],
+              ),
+            ),
+            Checkbox(
+              value: (assignment.status == null) ? false : true,
+              onChanged: (value) {
+                updateAssignmentStatus(value!, assignment.from!, assignment);
+                assignmentList.removeWhere((a) => a.due == assignment.due && a.title == assignment.title);
+                setState(() => assignmentList = assignmentList);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
