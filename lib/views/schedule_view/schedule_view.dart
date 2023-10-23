@@ -156,6 +156,7 @@ class _ScheduleViewState extends State<ScheduleView> {
                       DropdownMenuItem(value: 7, child: Text("${"deadlineTill".tr} 7 ${"daysTillHomework".tr}")),
                       DropdownMenuItem(value: 14, child: Text("${"deadlineTill".tr} 14 ${"daysTillHomework".tr}")),
                       DropdownMenuItem(value: 30, child: Text("${"deadlineTill".tr} 30 ${"daysTillHomework".tr}")),
+                      DropdownMenuItem(value: 60, child: Text("${"deadlineTill".tr} 60 ${"daysTillHomework".tr}")),
                     ],
                     onChanged: (value) {
                       setState(() => selectedFilter[0] = value);
