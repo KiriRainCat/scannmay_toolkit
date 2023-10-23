@@ -86,5 +86,9 @@
   {
     "version": "0.2.2-beta",
     "log": "修复 bug\n添加韩语界面"
+  },
+  {
+    "version": "0.2.3-beta",
+    "log": "修复 bug"
   }
 ]
