@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/functions/utils/utils.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
 
@@ -11,6 +12,19 @@ class JupiterDataStatusBar extends StatelessWidget {
   });
 
   final List<Widget>? additionalWidgets;
+
+  void checkForAssignments() async {
+    // 判断是否有浏览器正在进行数据检索，有的话不开始新的检索进程
+    try {
+      if (AssignmentNotifierBgWorker.browser.isConnected) {
+        UI.showNotification("info4".tr);
+        return;
+      }
+    } catch (_) {}
+
+    UI.showNotification("info5".tr);
+    AssignmentNotifierBgWorker.checkForNewAssignment();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +75,14 @@ class JupiterDataStatusBar extends StatelessWidget {
                 }),
               ],
             ),
+          ),
+        ),
+        const Expanded(child: SizedBox()),
+        Tooltip(
+          message: "forceFetchData".tr,
+          child: ElevatedButton(
+            onPressed: checkForAssignments,
+            child: const Icon(Icons.refresh),
           ),
         ),
         ...additionalWidgets ?? [],

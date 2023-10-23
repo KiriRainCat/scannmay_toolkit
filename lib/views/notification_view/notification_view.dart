@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:scannmay_toolkit/model/notification.dart';
 import 'package:scannmay_toolkit/functions/utils/ui.dart';
 import 'package:scannmay_toolkit/components/jupiter_data_status_bar.dart';
-import 'package:scannmay_toolkit/functions/assignment_notifier/bg_worker.dart';
 import 'package:scannmay_toolkit/views/notification_view/notification_card.dart';
 import 'package:scannmay_toolkit/functions/assignment_notifier/notification_queue.dart';
 
@@ -57,19 +56,6 @@ class NotificationViewState extends State<NotificationView> {
     if (result) NotificationQueue.clear();
   }
 
-  void checkForAssignments() async {
-    // 判断是否有浏览器正在进行数据检索，有的话不开始新的检索进程
-    try {
-      if (AssignmentNotifierBgWorker.browser.isConnected) {
-        UI.showNotification("info4".tr);
-        return;
-      }
-    } catch (_) {}
-
-    UI.showNotification("info5".tr);
-    AssignmentNotifierBgWorker.checkForNewAssignment();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -78,14 +64,6 @@ class NotificationViewState extends State<NotificationView> {
         children: [
           JupiterDataStatusBar(
             additionalWidgets: [
-              const Expanded(child: SizedBox()),
-              Tooltip(
-                message: "forceFetchData".tr,
-                child: ElevatedButton(
-                  onPressed: checkForAssignments,
-                  child: const Icon(Icons.refresh),
-                ),
-              ),
               const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: clearNotificationQueue,
