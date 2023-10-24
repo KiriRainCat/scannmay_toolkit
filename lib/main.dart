@@ -100,7 +100,7 @@ class _MainAppState extends State<MainApp> with WindowListener {
   void onWindowFocus() {
     final lastUpdateTime = DateTime.tryParse(AssignmentNotifierBgWorker.lastUpdateTime.value);
     final diff = DateTime.now().difference(lastUpdateTime ?? DateTime(2023)).inMinutes;
-    if (diff > 1) {
+    if (diff > 16) {
       try {
         if (!AssignmentNotifierBgWorker.browser.isConnected) AssignmentNotifierBgWorker.checkForNewAssignment();
       } catch (_) {
