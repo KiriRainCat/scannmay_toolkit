@@ -25,7 +25,7 @@ void main(List<String> args) async {
   // 获取版本号
   version = (await PackageInfo.fromPlatform()).version;
 
-// 开启数据库
+  // 开启数据库
   final isar = await Utils.initDatabase();
 
   // 从数据库获取用户设置
@@ -51,6 +51,9 @@ void main(List<String> args) async {
 
   // 应用启动时检查更新
   if (Utils.ifProduction()) AutoUpdater.checkForUpdate(atStartup: true);
+
+  // 软件启动获取一次数据
+  AssignmentNotifierBgWorker.checkForNewAssignment();
 }
 
 class MainApp extends StatefulWidget {
@@ -97,7 +100,7 @@ class _MainAppState extends State<MainApp> with WindowListener {
   void onWindowFocus() {
     final lastUpdateTime = DateTime.tryParse(AssignmentNotifierBgWorker.lastUpdateTime.value);
     final diff = DateTime.now().difference(lastUpdateTime ?? DateTime(2023)).inMinutes;
-    if (diff > 16) {
+    if (diff > 1) {
       try {
         if (!AssignmentNotifierBgWorker.browser.isConnected) AssignmentNotifierBgWorker.checkForNewAssignment();
       } catch (_) {
