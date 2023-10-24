@@ -94,6 +94,19 @@ class _MainAppState extends State<MainApp> with WindowListener {
   }
 
   @override
+  void onWindowFocus() {
+    final lastUpdateTime = DateTime.tryParse(AssignmentNotifierBgWorker.lastUpdateTime.value);
+    final diff = DateTime.now().difference(lastUpdateTime ?? DateTime(2023)).inMinutes;
+    if (diff > 16) {
+      try {
+        if (!AssignmentNotifierBgWorker.browser.isConnected) AssignmentNotifierBgWorker.checkForNewAssignment();
+      } catch (_) {
+        AssignmentNotifierBgWorker.checkForNewAssignment();
+      }
+    }
+  }
+
+  @override
   void onWindowClose() {
     windowManager.hide();
   }
@@ -209,15 +222,6 @@ Future<void> _initAndRunApp(List<String> args) async {
 }
 
 void _showWindow() async {
-  final lastUpdateTime = DateTime.tryParse(AssignmentNotifierBgWorker.lastUpdateTime.value);
-  final diff = DateTime.now().difference(lastUpdateTime ?? DateTime(2023)).inMinutes;
-  if (diff > 16) {
-    try {
-      if (!AssignmentNotifierBgWorker.browser.isConnected) AssignmentNotifierBgWorker.checkForNewAssignment();
-    } catch (_) {
-      AssignmentNotifierBgWorker.checkForNewAssignment();
-    }
-  }
   await windowManager.center();
   windowManager.show();
   windowManager.focus();
