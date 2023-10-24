@@ -49,12 +49,12 @@ class AssignmentNotifierBgWorker {
   }
 
   static Future<void> closeBrowser() async {
-    browser.close();
-    await Future.delayed(const Duration(milliseconds: 648));
     try {
+      browser.close();
+      await Future.delayed(const Duration(milliseconds: 500));
       Utils.shell.run("taskkill /f /t /im chrome.exe");
+      await Future.delayed(const Duration(milliseconds: 800));
     } catch (_) {}
-    await Future.delayed(const Duration(milliseconds: 100));
   }
 
   static Future<Page?> openJupiterPage() async {
