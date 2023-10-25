@@ -51,9 +51,9 @@ class AssignmentNotifierBgWorker {
   static Future<void> closeBrowser() async {
     try {
       browser.close();
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 320));
       Utils.shell.run("taskkill /f /t /im chrome.exe");
-      await Future.delayed(const Duration(milliseconds: 800));
+      await Future.delayed(const Duration(seconds: 2));
     } catch (_) {}
   }
 
