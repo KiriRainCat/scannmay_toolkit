@@ -50,7 +50,7 @@ class NotificationCard extends StatelessWidget {
       Log.logger.e("browserClose".tr, error: e);
       AssignmentNotifierBgWorker.dataFetchStatus.value = "-$e";
       UI.showNotification("${"err3".tr}: $e", type: NotificationType.error);
-      await AssignmentNotifierBgWorker.closeBrowser();
+      AssignmentNotifierBgWorker.closeBrowser();
       return;
     }
 
@@ -63,7 +63,7 @@ class NotificationCard extends StatelessWidget {
     await AssignmentNotifierBgWorker.getAssignmentDesc(jupiterPage, course, assignments);
     AssignmentNotifierBgWorker.isar.writeTxn(() => AssignmentNotifierBgWorker.isar.jupiterDatas.put(jupiterData));
 
-    await AssignmentNotifierBgWorker.closeBrowser();
+    AssignmentNotifierBgWorker.closeBrowser();
     Log.logger.i("browserClose".tr);
     AssignmentNotifierBgWorker.dataFetchStatus.value = "+";
     UI.showNotification("$assignmentTitle ${"info2".tr}");

@@ -102,7 +102,7 @@ class _ScheduleViewState extends State<ScheduleView> {
       Log.logger.e("browserClose".tr, error: e);
       AssignmentNotifierBgWorker.dataFetchStatus.value = "-$e";
       UI.showNotification("${"err3".tr}: $e", type: NotificationType.error);
-      await AssignmentNotifierBgWorker.closeBrowser();
+      AssignmentNotifierBgWorker.closeBrowser();
       return;
     }
 
@@ -115,7 +115,7 @@ class _ScheduleViewState extends State<ScheduleView> {
     await AssignmentNotifierBgWorker.getAssignmentDesc(jupiterPage, c, assignments);
     AssignmentNotifierBgWorker.isar.writeTxn(() => AssignmentNotifierBgWorker.isar.jupiterDatas.put(jupiterData));
 
-    await AssignmentNotifierBgWorker.closeBrowser();
+    AssignmentNotifierBgWorker.closeBrowser();
     AssignmentNotifierBgWorker.dataFetchStatus.value = "+";
     Log.logger.i("browserClose".tr);
     UI.showNotification("${assignment.title} ${"info2".tr}");
