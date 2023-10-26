@@ -98,5 +98,9 @@
   {
     "version": "0.2.5-beta",
     "log": "修复 bug"
+  },
+  {
+    "version": "0.2.6-beta",
+    "log": "开发者要修 bug 修哭了"
   }
 ]
