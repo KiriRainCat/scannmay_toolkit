@@ -97,10 +97,14 @@ class _MainAppState extends State<MainApp> with WindowListener {
   }
 
   @override
-  void onWindowFocus() {
+  void onWindowFocus() async {
     final lastUpdateTime = DateTime.tryParse(AssignmentNotifierBgWorker.lastUpdateTime.value);
     final diff = DateTime.now().difference(lastUpdateTime ?? DateTime(2023)).inMinutes;
     if (diff > 16) {
+      if (AssignmentNotifierBgWorker.browser.isConnected) {
+        AssignmentNotifierBgWorker.closeBrowser();
+        await Future.delayed(const Duration(seconds: 2));
+      }
       try {
         if (!AssignmentNotifierBgWorker.browser.isConnected) AssignmentNotifierBgWorker.checkForNewAssignment();
       } catch (_) {
