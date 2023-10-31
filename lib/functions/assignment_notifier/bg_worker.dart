@@ -408,8 +408,19 @@ class AssignmentNotifierBgWorker {
     // 浏览器关闭前检测是否需要检索作业详情信息
     if (assignmentsAwaitDesc.isNotEmpty && assignmentsAwaitDesc.length < 12) {
       for (var entry in assignmentsAwaitDesc.entries) {
-        final courses = await getCourses(jupiterPage);
-        final courseName = await courses[entry.key].evaluate("node => node.innerText");
+        late final List<ElementHandle> courses;
+        late final dynamic courseName;
+        try {
+          courses = await getCourses(jupiterPage);
+          courseName = await courses[entry.key].evaluate("node => node.innerText");
+        } catch (e) {
+          Log.logger.e("browserClose".tr, error: e);
+          final error = "Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败: $e";
+          dataFetchStatus.value = "-$error";
+          UI.showNotification(error, type: NotificationType.error);
+          closeBrowser();
+          return;
+        }
 
         try {
           courses[entry.key].hover();
@@ -489,7 +500,15 @@ class AssignmentNotifierBgWorker {
 
       // 更新数据 + 返回 Assignments 页面
       course.assignments!.firstWhere((item) => item.title == assignments[i].title).desc = desc;
-      jupiterPage.click("div[script*='grades']");
+      try {
+        jupiterPage.click("div[script*='grades']");
+      } catch (e) {
+        closeBrowser();
+        Log.logger.e("browserClose".tr, error: e);
+        final error = "Chromium 自动化浏览器出现上下文异常，作业详情信息获取失败: $e";
+        dataFetchStatus.value = "-$error";
+        UI.showNotification(error, type: NotificationType.error);
+      }
     }
   }
 
