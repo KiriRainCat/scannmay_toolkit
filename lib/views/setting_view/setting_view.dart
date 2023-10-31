@@ -27,17 +27,18 @@ class _SettingViewState extends State<SettingView> {
           SingleChildScrollView(
             child: Column(
               children: [
-                SettingField(
-                  property: "${"autoBoot".tr} [目前请不要开启！有 BUG]",
-                  desc: "desc2".tr,
-                  field: Switch(
-                    value: bool.parse(settings["launchOnStartup"]!),
-                    onChanged: (flag) {
-                      setState(() => settings["launchOnStartup"] = flag.toString());
-                      SettingManager.launchOnStartup(flag);
-                    },
-                  ),
-                ),
+                // TODO: 修复并兼容开机自启至多系统
+                // SettingField(
+                //   property: "${"autoBoot".tr}",
+                //   desc: "desc2".tr,
+                //   field: Switch(
+                //     value: bool.parse(settings["launchOnStartup"]!),
+                //     onChanged: (flag) {
+                //       setState(() => settings["launchOnStartup"] = flag.toString());
+                //       SettingManager.launchOnStartup(flag);
+                //     },
+                //   ),
+                // ),
                 SettingField(
                   property: "language".tr,
                   desc: "desc1".tr,
